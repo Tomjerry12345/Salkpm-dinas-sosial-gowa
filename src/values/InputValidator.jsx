@@ -32,7 +32,6 @@ const InputValidator = (input) => {
         notValidAll = true;
       }
     });
-    logged(`notValidAll => ${notValidAll}`);
     return notValidAll;
   };
 
@@ -46,6 +45,8 @@ const InputValidator = (input) => {
   const checkEmpty = (value) => {
     return value === "" ? true : false;
   };
+
+  logged(`notValid => ${notValid}`);
 
   return {
     checkNotValid,

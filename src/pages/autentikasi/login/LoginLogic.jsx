@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import FirebaseConfig from "../../../config/FirebaseConfig";
 import InputValidator from "../../../values/InputValidator";
 import { logged } from "../../../values/Utilitas";
 
@@ -21,6 +22,8 @@ const LoginLogic = () => {
 
   const validator = InputValidator(input);
 
+  const { getData } = FirebaseConfig();
+
   const onChange = (event, index) => {
     const { name, value } = event.target;
     validator.updateValid(value, index);
@@ -30,24 +33,39 @@ const LoginLogic = () => {
     });
   };
 
-  const onLogin = () => {
+  const onLogin = async () => {
     setClick(true);
-
     if (!validator.checkNotValidAll()) {
       setNotif({
         open: true,
-        message: "Berhasil login",
-        variant: "success",
+        message: "Silahkan tunggu ...",
+        variant: "progress",
+      });
+      const snapshot = await getData("admin");
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        logged(`${doc.id} => ${JSON.stringify(data)}`);
+        if (
+          input.username === data.username &&
+          input.password === data.password
+        ) {
+          localStorage.setItem("auth", "true");
+          navigate("/main");
+        } else {
+          setNotif({
+            open: true,
+            message: "Username atau password salah",
+            variant: "error",
+          });
+        }
       });
     }
-
-    // localStorage.setItem("auth", "true");
-    // navigate("/main");
   };
 
   const onError = (value) => (click ? validator.checkNotValid(value) : null);
 
-  const onHelperText = (value) => (click ? validator.messageNotValid(value) : null);
+  const onHelperText = (value) =>
+    click ? validator.messageNotValid(value) : null;
 
   const disableButton = () => (click ? validator.checkNotValidAll() : null);
 

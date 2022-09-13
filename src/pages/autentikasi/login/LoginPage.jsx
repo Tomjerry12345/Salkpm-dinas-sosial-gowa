@@ -17,11 +17,16 @@ const LoginPage = () => {
   return (
     <>
       <Grid container>
-        <Grid md={6} className="bg1 fullHeight">
+        <Grid item md={6} className="bg1 fullHeight">
           test
         </Grid>
-        <Grid md={6} className="fullHeight">
-          <Stack className="fullHeight" justifyContent="center" alignItems="center" spacing={1}>
+        <Grid item md={6} className="fullHeight">
+          <Stack
+            className="fullHeight"
+            justifyContent="center"
+            alignItems="center"
+            spacing={1}
+          >
             <Typography variant="h4" color={colorPrimary}>
               Masuk
             </Typography>
@@ -36,9 +41,32 @@ const LoginPage = () => {
                   marginTop: "30px",
                 }}
               >
-                <TextField name="username" value={username} onChange={(e) => onChange(e, 0)} error={onError(username)} helperText={onHelperText(username)} fullWidth required label="username" inputProps={setIconInput(<AccountCircle />, "start")} />
-                <TextField name="password" value={password} onChange={(e) => onChange(e, 1)} error={onError(password)} helperText={onHelperText(password)} fullWidth required label="password" />
-                <Button variant="contained" color="primary" onClick={func.onLogin} disabled={disableButton()}>
+                <TextField
+                  name="username"
+                  value={username}
+                  onChange={(e) => onChange(e, 0)}
+                  error={onError(username)}
+                  helperText={onHelperText(username)}
+                  fullWidth
+                  required
+                  label="username"
+                />
+                <TextField
+                  name="password"
+                  value={password}
+                  onChange={(e) => onChange(e, 1)}
+                  error={onError(password)}
+                  helperText={onHelperText(password)}
+                  fullWidth
+                  required
+                  label="password"
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={func.onLogin}
+                  disabled={disableButton()}
+                >
                   Login
                 </Button>
               </Stack>
@@ -48,7 +76,12 @@ const LoginPage = () => {
       </Grid>
 
       {/* modal */}
-      <ModalNotif open={notif.open} setOpen={setNotif} variant={notif.variant} message={notif.message} />
+      <ModalNotif
+        open={notif.open}
+        setOpen={setNotif}
+        variant={notif.variant}
+        message={notif.message}
+      />
     </>
   );
 };

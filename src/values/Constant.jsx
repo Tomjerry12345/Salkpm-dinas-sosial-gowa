@@ -15,8 +15,16 @@ export const dataDummy = [
 ];
 
 export const constantKelengkapanBerkas = [
-  ["Kartu Keluarga", "KTP", "KKS"],
-  ["KIS", "SKTM", "Domisili"],
+  [
+    { label: "Kartu Keluarga", name: "kartu_keluarga" },
+    { label: "Kartu KTP", name: "ktp" },
+    { label: "KKS", name: "kks" },
+  ],
+  [
+    { label: "KIS", name: "kis" },
+    { label: "SKTM", name: "sktm" },
+    { label: "Domisili", name: "domisili" },
+  ],
 ];
 
 export const constantJenisLayanan = ["Usulan KIS", "SKTM", "PKH", "BPNT"];

@@ -19,6 +19,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -29,8 +30,15 @@ import { colorPrimary } from "../../../values/Colors";
 import DaftarPengunjungLogic from "./DaftarPengunjungLogic";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { constantKelengkapanBerkas, dataDummy } from "../../../values/Constant";
+import {
+  constantJenisLayanan,
+  constantKelengkapanBerkas,
+  constantKelurahan,
+  dataDummy,
+} from "../../../values/Constant";
 import { constantKecamatan } from "../../../values/Constant";
+import { logged } from "../../../values/Utilitas";
+import "./DaftarPengunjung.scss";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -69,9 +77,9 @@ const DaftarPengunjungPage = () => {
             label="Kecamatan"
             // onChange={handleChange}
           >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            {constantKecamatan.map((kec) => (
+              <MenuItem value={kec}>{kec}</MenuItem>
+            ))}
           </Select>
         </FormControl>
         <FormControl sx={{ minWidth: 170 }}>
@@ -83,9 +91,9 @@ const DaftarPengunjungPage = () => {
             label="Jenis layanan"
             // onChange={handleChange}
           >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            {constantJenisLayanan.map((value) => (
+              <MenuItem value={value}>{value}</MenuItem>
+            ))}
           </Select>
         </FormControl>
         <Stack alignItems="flex-end" style={{ width: "100vw" }}>
@@ -143,38 +151,36 @@ const ShowData = () => (
   </TableContainer>
 );
 
-const tambahDataStyle = makeStyles({
-  rootModalBtn: {
-    border: 0,
-    borderRadius: 4,
-    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
-    color: "white",
-    width: 100,
-  },
-  cancelStyle: {
-    background: "linear-gradient(45deg, #FE2131 30%, #FE2131 90%)",
-  },
-  tambahStyle: {
-    background: "linear-gradient(45deg, #44FF33 30%, #44FF33 90%)",
-  },
-  selectStyle: {
-    marginLeft: 8,
-    minWidth: 550,
-  },
-  stackRoot: {
-    minWidth: 564,
-  },
-  formControlStyle: {
-    margin: "16px 32px",
-  },
-});
-
 const TambahData = ({ func, value }) => {
-  const classes = tambahDataStyle();
-  const { checkNotValid, messageNotValid } = func.validator;
-  const { nama_petugas } = value.input;
+  const { input, open, indexKecamatan } = value;
+  const {
+    onError,
+    onHelperText,
+    disableButton,
+    onChange,
+    onTambah,
+    handleClose,
+    onChangeDate,
+  } = func;
+  const {
+    nama_petugas,
+    nama_pengunjung,
+    no_kk,
+    nik,
+    kelurahan,
+    kecamatan,
+    alamat,
+    no_telpon,
+    jenis_layanan,
+    kelengkapan_berkas,
+    tanggal_lahir,
+  } = input;
   return (
-    <Dialog open={value.open} onClose={func.handleClose}>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      className="custom-dialog-tambah-data"
+    >
       <Stack alignItems="center">
         <DialogTitle>Tambah Data</DialogTitle>
       </Stack>
@@ -194,70 +200,137 @@ const TambahData = ({ func, value }) => {
             label="Nama Petugas"
             type="text"
             variant="outlined"
-            onChange={(e) => func.onChange(e, 0)}
+            onChange={(e) => onChange(e, 0, "input")}
             required
             value={nama_petugas}
-            error={checkNotValid(nama_petugas)}
-            helperText={messageNotValid(nama_petugas)}
+            error={onError(nama_petugas)}
+            helperText={onHelperText(nama_petugas)}
           />
 
           <TextField
-            id="namaPengunjung"
+            name="nama_pengunjung"
             label="Nama pengunjung"
             type="text"
             variant="outlined"
+            onChange={(e) => onChange(e, 1, "input")}
+            required
+            value={nama_pengunjung}
+            error={onError(nama_pengunjung)}
+            helperText={onHelperText(nama_pengunjung)}
           />
 
-          <TextField id="noKK" label="No.KK" type="email" variant="outlined" />
+          <TextField
+            name="no_kk"
+            label="No.KK"
+            type="number"
+            variant="outlined"
+            onChange={(e) => onChange(e, 2, "input")}
+            required
+            value={no_kk}
+            error={onError(no_kk)}
+            helperText={onHelperText(no_kk)}
+          />
 
-          <TextField id="nik" label="NIK" type="text" variant="outlined" />
-
-          <Stack
-            direction="horizontal"
-            justifyContent="space-between"
-            className={classes.stackRoot}
-          >
-            <TextField
-              id="name"
-              label="Kelurahan"
-              type="text"
-              variant="outlined"
-            />
-            <TextField
-              id="name"
-              label="Kecamatan"
-              type="text"
-              variant="outlined"
-            />
+          <TextField
+            name="nik"
+            label="NIK"
+            type="number"
+            variant="outlined"
+            onChange={(e) => onChange(e, 3, "input")}
+            required
+            value={nik}
+            error={onError(nik)}
+            helperText={onHelperText(nik)}
+          />
+          <Stack className="custom-stack-kecamatan-kelurahan ">
+            <FormControl sx={{ ml: 1, minWidth: 200 }}>
+              <InputLabel id="demo-simple-select-label">Kecamatan</InputLabel>
+              <Select
+                name="kecamatan"
+                label="Kecamatan"
+                onChange={(e) => onChange(e, 4, "input")}
+                required
+                value={kecamatan}
+                error={onError(kecamatan)}
+              >
+                {constantKecamatan.map((kec) => (
+                  <MenuItem value={kec}>{kec}</MenuItem>
+                ))}
+              </Select>
+              {onHelperText(kecamatan) ? (
+                <FormHelperText sx={{ color: "red" }}>
+                  Form harus di isi
+                </FormHelperText>
+              ) : null}
+            </FormControl>
+            <FormControl sx={{ mr: 1, minWidth: 200 }}>
+              <InputLabel id="demo-simple-select-label">Kelurahan</InputLabel>
+              <Select
+                name="kelurahan"
+                label="Kelurahan"
+                onChange={(e) => onChange(e, 5, "input")}
+                required
+                value={kelurahan}
+                error={onError(kelurahan)}
+                disabled={indexKecamatan !== null ? false : true}
+              >
+                {constantKelurahan !== undefined
+                  ? constantKelurahan[indexKecamatan].map((kel) => (
+                      <MenuItem value={kel}>{kel}</MenuItem>
+                    ))
+                  : null}
+              </Select>
+              {onHelperText(kelurahan) ? (
+                <FormHelperText sx={{ color: "red" }}>
+                  Form harus di isi
+                </FormHelperText>
+              ) : null}
+            </FormControl>
           </Stack>
 
           <TextField
-            id="name"
+            name="alamat"
             label="Alamat tempat tinggal"
             type="text"
             variant="outlined"
+            onChange={(e) => onChange(e, 6, "input")}
+            required
+            value={alamat}
+            error={onError(alamat)}
+            helperText={onHelperText(alamat)}
           />
 
           <TextField
-            id="name"
+            name="no_telpon"
             label="Nomor Telepon"
-            type="text"
+            type="number"
             variant="outlined"
+            onChange={(e) => onChange(e, 7, "input")}
+            required
+            value={no_telpon}
+            error={onError(no_telpon)}
+            helperText={onHelperText(no_telpon)}
           />
 
-          <FormControl className={classes.selectStyle}>
+          <FormControl className="custom-select" fullWidth>
             <InputLabel id="demo-simple-select-label">Jenis layanan</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              // value={age}
+              name="jenis_layanan"
               label="Jenis layanan"
-              // onChange={handleChange}
+              onChange={(e) => onChange(e, 8, "input")}
+              required
+              value={jenis_layanan}
+              error={onError(jenis_layanan)}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {constantJenisLayanan.map((value) => (
+                <MenuItem value={value}>{value}</MenuItem>
+              ))}
             </Select>
+            {onHelperText(jenis_layanan) ? (
+              <FormHelperText sx={{ color: "red" }}>
+                Form harus di isi
+              </FormHelperText>
+            ) : null}
           </FormControl>
 
           <Typography
@@ -271,67 +344,57 @@ const TambahData = ({ func, value }) => {
           </Typography>
 
           <Stack
+            className="custom-stack-kelengkapan-berkas"
             direction="horizontal"
             justifyContent="space-between"
-            className={classes.stackRoot}
           >
-            <FormControl
-              className={classes.formControlStyle}
-              component="fieldset"
-              variant="standard"
-            >
-              {/* <FormLabel component="legend">Assign responsibility</FormLabel> */}
+            <FormControl component="fieldset" variant="standard">
               <FormGroup>
-                {constantKelengkapanBerkas[0].map((label) => (
+                {constantKelengkapanBerkas[0].map((value) => (
                   <FormControlLabel
                     control={
                       <Checkbox
-                        // checked={gilad}
-                        // onChange={handleChange}
-                        name="gilad"
+                        checked={kelengkapan_berkas[value.name]}
+                        onChange={(e) => onChange(e, 9, "checkbox")}
+                        name={value.name}
                       />
                     }
-                    label={label}
+                    label={value.label}
                   />
                 ))}
               </FormGroup>
-              {/* <FormHelperText>Be careful</FormHelperText> */}
             </FormControl>
 
-            <FormControl
-              className={classes.formControlStyle}
-              component="fieldset"
-              variant="standard"
-            >
-              {/* <FormLabel component="legend" hidden>
-                test
-              </FormLabel> */}
+            <FormControl component="fieldset" variant="standard">
               <FormGroup>
-                {constantKelengkapanBerkas[1].map((label) => (
+                {constantKelengkapanBerkas[1].map((value) => (
                   <FormControlLabel
                     control={
                       <Checkbox
-                        // checked={gilad}
-                        // onChange={handleChange}
-                        name="gilad"
+                        checked={kelengkapan_berkas[value.name]}
+                        onChange={(e) => onChange(e, 9, "checkbox")}
+                        name={value.name}
                       />
                     }
-                    label={label}
+                    label={value.label}
                   />
                 ))}
               </FormGroup>
-              {/* <FormHelperText>Be careful</FormHelperText> */}
             </FormControl>
           </Stack>
 
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DatePicker
               label="Tanggal lahir"
-              // value={value1}
-              onChange={(newValue) => {
-                // setValue(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} />}
+              value={tanggal_lahir}
+              onChange={onChangeDate}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={onError(tanggal_lahir)}
+                  helperText={onHelperText(tanggal_lahir)}
+                />
+              )}
             />
           </LocalizationProvider>
         </Box>
@@ -342,16 +405,17 @@ const TambahData = ({ func, value }) => {
         }}
       >
         <Button
+          className="cancel-btn"
           variant="contained"
-          onClick={func.handleClose}
-          className={`${classes.rootModalBtn}  ${classes.cancelStyle}`}
+          onClick={handleClose}
         >
           Cancel
         </Button>
         <Button
-          type="submit"
-          onClick={func.onTambah}
-          className={`${classes.rootModalBtn}  ${classes.tambahStyle}`}
+          className="succes-btn"
+          variant="contained"
+          onClick={onTambah}
+          disabled={disableButton()}
         >
           Tambah
         </Button>

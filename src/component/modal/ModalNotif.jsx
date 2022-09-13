@@ -34,7 +34,7 @@ const ModalNotif = ({ open, setOpen, message, variant }) => {
     <Modal className="modal-notif" open={open} onClose={handleClose}>
       <Box className="custom-box" sx={style}>
         {variant === "progress" ? (
-          <CircularProgress />
+          <CircularProgress className="custom-icon" />
         ) : (
           <SetIcon variant={variant} />
         )}
