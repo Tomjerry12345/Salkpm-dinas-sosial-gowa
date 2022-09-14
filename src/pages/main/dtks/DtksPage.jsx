@@ -9,6 +9,9 @@ import Paper from "@mui/material/Paper";
 import { Stack } from "@mui/system";
 import { Button, TextField, Typography } from "@mui/material";
 import { colorPrimary } from "../../../values/Colors";
+import { useEffect } from "react";
+import { getLocalItem, logged, setLocalItem } from "../../../values/Utilitas";
+import { useNavigate } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -54,6 +57,16 @@ const rows = [
 ];
 
 const DtksPage = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const movePage = getLocalItem("move-page");
+    logged(`movePage => ${movePage}`);
+    if (movePage !== "null") {
+      navigate(movePage);
+    }
+    setLocalItem("move-page", null);
+  }, []);
+
   return (
     <>
       <Typography variant="h5">Cek DTKS</Typography>

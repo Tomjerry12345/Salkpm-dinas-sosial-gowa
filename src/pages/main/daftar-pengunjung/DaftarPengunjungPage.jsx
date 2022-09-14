@@ -34,11 +34,10 @@ import {
   constantJenisLayanan,
   constantKelengkapanBerkas,
   constantKelurahan,
-  dataDummy,
 } from "../../../values/Constant";
 import { constantKecamatan } from "../../../values/Constant";
-import { logged } from "../../../values/Utilitas";
 import "./DaftarPengunjung.scss";
+import ModalNotif from "../../../component/modal/ModalNotif";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -62,6 +61,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const DaftarPengunjungPage = () => {
   const { func, value } = DaftarPengunjungLogic();
+  const { open, variant, message } = value.notif;
 
   return (
     <>
@@ -69,28 +69,16 @@ const DaftarPengunjungPage = () => {
 
       <Stack sx={{ mb: 4, mt: 4 }} direction="horizontal">
         <FormControl sx={{ mr: 2, minWidth: 150 }}>
-          <InputLabel id="demo-simple-select-label">Kecamatan</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            // value={age}
-            label="Kecamatan"
-            // onChange={handleChange}
-          >
+          <InputLabel id="filter_kecamatan">Kecamatan</InputLabel>
+          <Select labelId="filter_kecamatan" label="Kecamatan">
             {constantKecamatan.map((kec) => (
               <MenuItem value={kec}>{kec}</MenuItem>
             ))}
           </Select>
         </FormControl>
         <FormControl sx={{ minWidth: 170 }}>
-          <InputLabel id="demo-simple-select-label">Jenis layanan</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            // value={age}
-            label="Jenis layanan"
-            // onChange={handleChange}
-          >
+          <InputLabel id="filter_jenis_layanan">Jenis layanan</InputLabel>
+          <Select labelId="filter_jenis_layanan" label="Jenis layanan">
             {constantJenisLayanan.map((value) => (
               <MenuItem value={value}>{value}</MenuItem>
             ))}
@@ -101,7 +89,7 @@ const DaftarPengunjungPage = () => {
         </Stack>
       </Stack>
 
-      <ShowData />
+      <ShowData value={value} />
 
       <TambahData func={func} value={value} />
 
@@ -114,38 +102,58 @@ const DaftarPengunjungPage = () => {
           Tambah Data
         </Button>
       </Stack>
+
+      {/* modal */}
+      <ModalNotif
+        open={open}
+        setOpen={value.setNotif}
+        variant={variant}
+        message={message}
+        onSucces={func.resSucces}
+      />
     </>
   );
 };
 
-const ShowData = () => (
+const ShowData = ({ value }) => (
   <TableContainer component={Paper}>
     <Table sx={{ minWidth: 700 }} aria-label="customized table">
       <TableHead>
         <TableRow>
           <StyledTableCell>No</StyledTableCell>
-          <StyledTableCell align="right">Nama</StyledTableCell>
-          <StyledTableCell align="right">Alamat</StyledTableCell>
-          <StyledTableCell align="right">Bantuan</StyledTableCell>
-          <StyledTableCell align="right">No.KK</StyledTableCell>
-          <StyledTableCell align="right">NIK</StyledTableCell>
-          <StyledTableCell align="right">Tanggal</StyledTableCell>
+          <StyledTableCell align="center">Nama</StyledTableCell>
+          <StyledTableCell align="center">Alamat</StyledTableCell>
+          <StyledTableCell align="center">Jenis layanan</StyledTableCell>
+          <StyledTableCell align="center">No.KK</StyledTableCell>
+          <StyledTableCell align="center">NIK</StyledTableCell>
+          <StyledTableCell align="center">Tanggal Lahir</StyledTableCell>
+          <StyledTableCell align="center"></StyledTableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {dataDummy.map((row) => (
-          <StyledTableRow key={row.no}>
-            <StyledTableCell component="th" scope="row">
-              {row.no}
-            </StyledTableCell>
-            <StyledTableCell align="right">{row.nama}</StyledTableCell>
-            <StyledTableCell align="right">{row.alamat}</StyledTableCell>
-            <StyledTableCell align="right">{row.bantuan}</StyledTableCell>
-            <StyledTableCell align="right">{row.nokk}</StyledTableCell>
-            <StyledTableCell align="right">{row.nik}</StyledTableCell>
-            <StyledTableCell align="right">{row.tanggal}</StyledTableCell>
-          </StyledTableRow>
-        ))}
+        {value.data &&
+          value.data.map((row, i) => (
+            <StyledTableRow key={i + 1}>
+              <StyledTableCell component="th" scope="row">
+                {i + 1}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                {row.nama_pengunjung}
+              </StyledTableCell>
+              <StyledTableCell align="center">{row.alamat}</StyledTableCell>
+              <StyledTableCell align="center">
+                {row.jenis_layanan}
+              </StyledTableCell>
+              <StyledTableCell align="center">{row.no_kk}</StyledTableCell>
+              <StyledTableCell align="center">{row.nik}</StyledTableCell>
+              <StyledTableCell align="center">
+                {row.tanggal_lahir}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                <Button variant="outlined">Detail</Button>
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
       </TableBody>
     </Table>
   </TableContainer>
@@ -242,7 +250,7 @@ const TambahData = ({ func, value }) => {
             error={onError(nik)}
             helperText={onHelperText(nik)}
           />
-          <Stack className="custom-stack-kecamatan-kelurahan ">
+          <Stack className="custom-stack-kecamatan-kelurahan">
             <FormControl sx={{ ml: 1, minWidth: 200 }}>
               <InputLabel id="demo-simple-select-label">Kecamatan</InputLabel>
               <Select
@@ -274,10 +282,12 @@ const TambahData = ({ func, value }) => {
                 error={onError(kelurahan)}
                 disabled={indexKecamatan !== null ? false : true}
               >
-                {constantKelurahan !== undefined
-                  ? constantKelurahan[indexKecamatan].map((kel) => (
-                      <MenuItem value={kel}>{kel}</MenuItem>
-                    ))
+                {indexKecamatan !== null
+                  ? constantKelurahan !== undefined
+                    ? constantKelurahan[indexKecamatan].map((kel) => (
+                        <MenuItem value={kel}>{kel}</MenuItem>
+                      ))
+                    : null
                   : null}
               </Select>
               {onHelperText(kelurahan) ? (
@@ -313,7 +323,7 @@ const TambahData = ({ func, value }) => {
           />
 
           <FormControl className="custom-select" fullWidth>
-            <InputLabel id="demo-simple-select-label">Jenis layanan</InputLabel>
+            <InputLabel>Jenis layanan</InputLabel>
             <Select
               name="jenis_layanan"
               label="Jenis layanan"

@@ -15,6 +15,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -26,7 +27,15 @@ import PengusulanKisLogic from "./PengusulanKisLogic";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { makeStyles } from "@mui/styles";
-import { constantJenisKelamin } from "../../../values/Constant";
+import {
+  constantJenisKelamin,
+  constantKecamatan,
+  constantKelurahan,
+  constantPisat,
+  constantStatusKawin,
+} from "../../../values/Constant";
+import "./PengusulanKis.scss";
+import ModalNotif from "../../../component/modal/ModalNotif";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,38 +57,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(no, nama, alamat, bantuan, nokk, nik, tanggal) {
-  return { no, nama, alamat, bantuan, nokk, nik, tanggal };
-}
-
-const rows = [
-  createData(
-    1,
-    "Reski Arwah",
-    "Tanuntung",
-    "KIS",
-    "55555555",
-    "730205201199002",
-    "09/07/2022"
-  ),
-];
-
 const PengusulanKisPage = () => {
   const { func, value } = PengusulanKisLogic();
-
-  // const [value1, setValue] = (React.useState < Date) | (null > null);
+  const { open, variant, message } = value.notif;
   return (
     <>
       <Typography variant="h5" sx={{ mb: 4 }}>
         Pengusulan KIS
       </Typography>
-      {/* <Stack alignItems="flex-end" sx={{ mb: 4 }}>
-        <TextField variant="outlined" label="Input NIK / No. KK" />
-      </Stack> */}
 
-      <ShowData />
+      <ShowData value={value} />
 
-      <TambahData open={value.open} handleClose={func.handleClose} />
+      <TambahData value={value} func={func} />
 
       <Stack alignItems="flex-end" sx={{ mt: 4 }}>
         <Button
@@ -90,70 +79,95 @@ const PengusulanKisPage = () => {
           Tambah Data
         </Button>
       </Stack>
+
+      {/* modal */}
+      <ModalNotif
+        open={open}
+        setOpen={value.setNotif}
+        variant={variant}
+        message={message}
+        onSucces={func.resSucces}
+      />
     </>
   );
 };
 
-const ShowData = () => (
+const ShowData = ({ value }) => (
   <TableContainer component={Paper}>
     <Table sx={{ minWidth: 700 }} aria-label="customized table">
       <TableHead>
         <TableRow>
           <StyledTableCell>No</StyledTableCell>
-          <StyledTableCell align="right">Nama</StyledTableCell>
-          <StyledTableCell align="right">Alamat</StyledTableCell>
-          <StyledTableCell align="right">Bantuan</StyledTableCell>
-          <StyledTableCell align="right">No.KK</StyledTableCell>
-          <StyledTableCell align="right">NIK</StyledTableCell>
-          <StyledTableCell align="right">Tanggal</StyledTableCell>
+          <StyledTableCell align="center">Nama</StyledTableCell>
+          <StyledTableCell align="center">Alamat</StyledTableCell>
+          <StyledTableCell align="center">PISAT</StyledTableCell>
+          <StyledTableCell align="center">No.KK</StyledTableCell>
+          <StyledTableCell align="center">NIK</StyledTableCell>
+          <StyledTableCell align="center">Tanggal Lahir</StyledTableCell>
+          <StyledTableCell align="center"></StyledTableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {rows.map((row) => (
-          <StyledTableRow key={row.no}>
-            <StyledTableCell component="th" scope="row">
-              {row.no}
-            </StyledTableCell>
-            <StyledTableCell align="right">{row.nama}</StyledTableCell>
-            <StyledTableCell align="right">{row.alamat}</StyledTableCell>
-            <StyledTableCell align="right">{row.bantuan}</StyledTableCell>
-            <StyledTableCell align="right">{row.nokk}</StyledTableCell>
-            <StyledTableCell align="right">{row.nik}</StyledTableCell>
-            <StyledTableCell align="right">{row.tanggal}</StyledTableCell>
-          </StyledTableRow>
-        ))}
+        {value.data &&
+          value.data.map((row, i) => (
+            <StyledTableRow key={i + 1}>
+              <StyledTableCell component="th" scope="row">
+                {i + 1}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                {row.nama_lengkap}
+              </StyledTableCell>
+              <StyledTableCell align="center">{row.alamat}</StyledTableCell>
+              <StyledTableCell align="center">{row.pisat}</StyledTableCell>
+              <StyledTableCell align="center">{row.no_kk}</StyledTableCell>
+              <StyledTableCell align="center">{row.nik}</StyledTableCell>
+              <StyledTableCell align="center">
+                {row.tanggal_lahir}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                <Button variant="outlined">Detail</Button>
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
       </TableBody>
     </Table>
   </TableContainer>
 );
 
-const tambahDataStyle = makeStyles({
-  rootModalBtn: {
-    border: 0,
-    borderRadius: 4,
-    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
-    color: "white",
-    width: 100,
-  },
-  cancelStyle: {
-    background: "linear-gradient(45deg, #FE2131 30%, #FE2131 90%)",
-  },
-  tambahStyle: {
-    background: "linear-gradient(45deg, #44FF33 30%, #44FF33 90%)",
-  },
-  selectStyle: {
-    marginLeft: 8,
-    minWidth: 550,
-  },
-  stackRoot: {
-    minWidth: 564,
-  },
-});
-
-const TambahData = ({ open, handleClose }) => {
-  const classes = tambahDataStyle();
+const TambahData = ({ value, func }) => {
+  const { input, open, indexKecamatan } = value;
+  const {
+    onError,
+    onHelperText,
+    disableButton,
+    onChange,
+    onTambah,
+    handleClose,
+    onChangeDate,
+  } = func;
+  const {
+    no_kk,
+    nik,
+    nama_lengkap,
+    pisat,
+    tempat_lahir,
+    tanggal_lahir,
+    jenis_kelamin,
+    status_kawin,
+    alamat,
+    rw,
+    rt,
+    kode_pos,
+    kecamatan,
+    kelurahan,
+    no_telpon,
+  } = input;
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog
+      className="custom-dialog-tambah-data"
+      open={open}
+      onClose={handleClose}
+    >
       <Stack alignItems="center">
         <DialogTitle>Tambah Data</DialogTitle>
       </Stack>
@@ -163,127 +177,244 @@ const TambahData = ({ open, handleClose }) => {
         }}
       >
         <Box
-          component="form"
           sx={{
             "& .MuiTextField-root": { m: 1, width: "550px" },
           }}
-          noValidate
-          autoComplete="off"
         >
-          <TextField id="noKK" label="No.KK" type="email" variant="outlined" />
-          <TextField id="nik" label="NIK" type="email" variant="outlined" />
           <TextField
-            id="name"
+            name="no_kk"
+            label="No.KK"
+            type="text"
+            variant="outlined"
+            onChange={(e) => onChange(e, 0, "input")}
+            required
+            value={no_kk}
+            error={onError(no_kk)}
+            helperText={onHelperText(no_kk)}
+          />
+
+          <TextField
+            name="nik"
+            label="NIK"
+            type="text"
+            variant="outlined"
+            onChange={(e) => onChange(e, 1, "input")}
+            required
+            value={nik}
+            error={onError(nik)}
+            helperText={onHelperText(nik)}
+          />
+
+          <TextField
+            name="nama_lengkap"
             label="Nama lengkap"
-            type="email"
+            type="text"
             variant="outlined"
+            onChange={(e) => onChange(e, 2, "input")}
+            required
+            value={nama_lengkap}
+            error={onError(nama_lengkap)}
+            helperText={onHelperText(nama_lengkap)}
           />
-          <FormControl className={classes.selectStyle}>
-            <InputLabel id="demo-simple-select-label">PISAT</InputLabel>
+
+          <FormControl className="custom-select" fullWidth>
+            <InputLabel>PISAT</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              // value={age}
+              name="pisat"
               label="PISAT"
-              // onChange={handleChange}
+              onChange={(e) => onChange(e, 3, "input")}
+              required
+              value={pisat}
+              error={onError(pisat)}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {constantPisat.map((value) => (
+                <MenuItem value={value}>{value}</MenuItem>
+              ))}
             </Select>
+            {onHelperText(pisat) ? (
+              <FormHelperText sx={{ color: "red" }}>
+                Form harus di isi
+              </FormHelperText>
+            ) : null}
           </FormControl>
+
           <TextField
-            id="tempat-lahir"
+            name="tempat_lahir"
             label="Tempat lahir"
-            type="email"
+            type="text"
             variant="outlined"
+            onChange={(e) => onChange(e, 4, "input")}
+            required
+            value={tempat_lahir}
+            error={onError(tempat_lahir)}
+            helperText={onHelperText(tempat_lahir)}
           />
+
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DatePicker
               label="Tanggal lahir"
-              // value={value1}
-              onChange={(newValue) => {
-                // setValue(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} />}
+              value={tanggal_lahir}
+              onChange={onChangeDate}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={onError(tanggal_lahir)}
+                  helperText={onHelperText(tanggal_lahir)}
+                />
+              )}
             />
           </LocalizationProvider>
-          <FormControl className={classes.selectStyle}>
-            <InputLabel id="demo-simple-select-label">Jenis Kelamin</InputLabel>
+
+          <FormControl className="custom-select" fullWidth>
+            <InputLabel>Jenis Kelamin</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              // value={age}
+              name="jenis_kelamin"
               label="Jenis Kelamin"
-              // onChange={handleChange}
+              onChange={(e) => onChange(e, 6, "input")}
+              required
+              value={jenis_kelamin}
+              error={onError(jenis_kelamin)}
             >
               {constantJenisKelamin.map((data) => (
                 <MenuItem value={data}>{data}</MenuItem>
               ))}
             </Select>
+            {onHelperText(pisat) ? (
+              <FormHelperText sx={{ color: "red" }}>
+                Form harus di isi
+              </FormHelperText>
+            ) : null}
           </FormControl>
-          <FormControl className={classes.selectStyle} sx={{ mt: 1 }}>
-            <InputLabel id="demo-simple-select-label">Status Kawin</InputLabel>
+
+          <FormControl className="custom-select" fullWidth>
+            <InputLabel>Status Kawin</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              // value={age}
+              name="status_kawin"
               label="Status Kawin"
-              // onChange={handleChange}
+              onChange={(e) => onChange(e, 7, "input")}
+              required
+              value={status_kawin}
+              error={onError(status_kawin)}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {constantStatusKawin.map((data) => (
+                <MenuItem value={data}>{data}</MenuItem>
+              ))}
             </Select>
+            {onHelperText(status_kawin) ? (
+              <FormHelperText sx={{ color: "red" }}>
+                Form harus di isi
+              </FormHelperText>
+            ) : null}
           </FormControl>
+
           <TextField
-            id="name"
+            name="alamat"
             label="Alamat tempat tinggal"
             type="email"
             variant="outlined"
+            onChange={(e) => onChange(e, 8, "input")}
+            required
+            value={alamat}
+            error={onError(alamat)}
+            helperText={onHelperText(alamat)}
           />
-          <Stack
-            direction="horizontal"
-            justifyContent="space-between"
-            className={classes.stackRoot}
-          >
-            <TextField id="name" label="RW" type="email" variant="outlined" />
+
+          <Stack className="custom-stack">
             <TextField
-              id="name"
-              label="RT   "
-              type="email"
+              name="rw"
+              label="RW"
+              type="text"
               variant="outlined"
+              onChange={(e) => onChange(e, 9, "input")}
+              required
+              value={rw}
+              error={onError(rw)}
+              helperText={onHelperText(rw)}
+            />
+
+            <TextField
+              name="rt"
+              label="RT"
+              type="text"
+              variant="outlined"
+              onChange={(e) => onChange(e, 10, "input")}
+              required
+              value={rt}
+              error={onError(rt)}
+              helperText={onHelperText(rt)}
             />
           </Stack>
+
           <TextField
-            id="name"
+            name="kode_pos"
             label="Kode pos"
-            type="email"
+            type="text"
             variant="outlined"
+            onChange={(e) => onChange(e, 11, "input")}
+            required
+            value={kode_pos}
+            error={onError(kode_pos)}
+            helperText={onHelperText(kode_pos)}
           />
-          <Stack
-            direction="horizontal"
-            justifyContent="space-between"
-            className={classes.stackRoot}
-          >
-            <TextField
-              id="name"
-              label="Kelurahan"
-              type="text"
-              variant="outlined"
-            />
-            <TextField
-              id="name"
-              label="Kecamatan"
-              type="text"
-              variant="outlined"
-            />
+
+          <Stack className="custom-stack">
+            <FormControl sx={{ ml: 1, minWidth: 200 }}>
+              <InputLabel>Kecamatan</InputLabel>
+              <Select
+                name="kecamatan"
+                label="Kecamatan"
+                onChange={(e) => onChange(e, 12, "input")}
+                required
+                value={kecamatan}
+                error={onError(kecamatan)}
+              >
+                {constantKecamatan.map((kec) => (
+                  <MenuItem value={kec}>{kec}</MenuItem>
+                ))}
+              </Select>
+              {onHelperText(kecamatan) ? (
+                <FormHelperText sx={{ color: "red" }}>
+                  Form harus di isi
+                </FormHelperText>
+              ) : null}
+            </FormControl>
+            <FormControl sx={{ mr: 1, minWidth: 200 }}>
+              <InputLabel id="demo-simple-select-label">Kelurahan</InputLabel>
+              <Select
+                name="kelurahan"
+                label="Kelurahan"
+                onChange={(e) => onChange(e, 13, "input")}
+                required
+                value={kelurahan}
+                error={onError(kelurahan)}
+                disabled={indexKecamatan !== null ? false : true}
+              >
+                {indexKecamatan !== null
+                  ? constantKelurahan !== undefined
+                    ? constantKelurahan[indexKecamatan].map((kel) => (
+                        <MenuItem value={kel}>{kel}</MenuItem>
+                      ))
+                    : null
+                  : null}
+              </Select>
+              {onHelperText(kelurahan) ? (
+                <FormHelperText sx={{ color: "red" }}>
+                  Form harus di isi
+                </FormHelperText>
+              ) : null}
+            </FormControl>
           </Stack>
+
           <TextField
-            id="name"
+            name="no_telpon"
             label="Nomor Telepon"
             type="text"
             variant="outlined"
+            onChange={(e) => onChange(e, 14, "input")}
+            required
+            value={no_telpon}
+            error={onError(no_telpon)}
+            helperText={onHelperText(no_telpon)}
           />
         </Box>
       </DialogContent>
@@ -293,15 +424,17 @@ const TambahData = ({ open, handleClose }) => {
         }}
       >
         <Button
+          className="cancel-btn"
           variant="contained"
           onClick={handleClose}
-          className={`${classes.rootModalBtn}  ${classes.cancelStyle}`}
         >
           Cancel
         </Button>
+
         <Button
-          onClick={handleClose}
-          className={`${classes.rootModalBtn}  ${classes.tambahStyle}`}
+          className="succes-btn"
+          onClick={onTambah}
+          disabled={disableButton()}
         >
           Tambah
         </Button>

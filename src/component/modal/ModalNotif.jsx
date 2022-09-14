@@ -23,7 +23,7 @@ const SetIcon = ({ variant }) =>
     <CancelOutlinedIcon className="custom-icon" color="error" />
   );
 
-const ModalNotif = ({ open, setOpen, message, variant }) => {
+const ModalNotif = ({ open, setOpen, message, variant, onSucces }) => {
   const handleClose = () =>
     setOpen({
       open: false,
@@ -47,7 +47,7 @@ const ModalNotif = ({ open, setOpen, message, variant }) => {
             variant="outlined"
             sx={{ mt: 4 }}
             color={variant}
-            onClick={handleClose}
+            onClick={variant === "success" ? onSucces : handleClose}
           >
             {variant === "success" ? "Lanjut" : "Kembali"}
           </Button>

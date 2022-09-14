@@ -1,9 +1,12 @@
 .custom-dialog-tambah-data {
-  .custom-stack {
+  .custom-stack-kecamatan-kelurahan {
     min-width: 564px;
     flex-direction: row;
     justify-content: space-between;
     margin: 8px 0px;
+  }
+  .custom-stack-kelengkapan-berkas {
+    margin: 16px;
   }
   .custom-select {
     min-width: 550px;

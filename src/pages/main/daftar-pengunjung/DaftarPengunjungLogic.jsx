@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import FirebaseConfig from "../../../config/FirebaseConfig";
 import { constantKecamatan } from "../../../values/Constant";
 import InputValidator from "../../../values/InputValidator";
-import { logged } from "../../../values/Utilitas";
+import { logged, setLocalItem } from "../../../values/Utilitas";
 
 const DaftarPengunjungLogic = () => {
   const [open, setOpen] = useState(false);
@@ -27,6 +28,8 @@ const DaftarPengunjungLogic = () => {
     tanggal_lahir: "",
   });
 
+  const [data, setData] = useState([]);
+
   const [click, setClick] = useState(false);
 
   const [indexKecamatan, setIndexKecamatan] = useState(null);
@@ -37,9 +40,27 @@ const DaftarPengunjungLogic = () => {
     variant: "",
   });
 
+  const navigate = useNavigate();
+
   const validator = InputValidator(input);
 
-  const { addData } = FirebaseConfig();
+  const { addData, getData } = FirebaseConfig();
+
+  useEffect(() => {
+    getAllData();
+  }, []);
+
+  const getAllData = async () => {
+    const snapshot = await getData("pengunjung");
+    let listData = [];
+
+    snapshot.forEach((doc) => {
+      const docData = doc.data();
+      listData.push(docData);
+      logged(`data => ${JSON.stringify(docData)}`);
+    });
+    setData(listData);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -90,24 +111,33 @@ const DaftarPengunjungLogic = () => {
   const onTambah = async (e) => {
     setClick(true);
 
-    logged(`input => ${JSON.stringify(input)}`);
-
-    const res = await addData("pengunjung", input);
-
-    logged(`res Tambah => ${res}`);
-
-    if (res) {
+    if (!validator.checkNotValidAll) {
       setNotif({
-        open: false,
-        message: "",
-        variant: "",
+        open: true,
+        message: "Sedang di proses...",
+        variant: "progress",
       });
-    } else
-      setNotif({
-        open: false,
-        message: "",
-        variant: "",
-      });
+
+      const res = await addData("pengunjung", input);
+
+      if (res) {
+        setNotif({
+          open: true,
+          message: "Data berhasil di tambahkan",
+          variant: "success",
+        });
+      } else
+        setNotif({
+          open: true,
+          message: "Data gagal di tambahkan",
+          variant: "error",
+        });
+    }
+  };
+
+  const resSucces = () => {
+    setLocalItem("move-page", "/main/daftar-pengunjung");
+    navigate("/");
   };
 
   const onError = (value) => (click ? validator.checkNotValid(value) : null);
@@ -127,11 +157,15 @@ const DaftarPengunjungLogic = () => {
       onHelperText,
       disableButton,
       onChangeDate,
+      resSucces,
     },
     value: {
       open,
       input,
       indexKecamatan,
+      data,
+      notif,
+      setNotif,
     },
   };
 };
