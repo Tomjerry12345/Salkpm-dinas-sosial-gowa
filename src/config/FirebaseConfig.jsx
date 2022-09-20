@@ -7,7 +7,9 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { logged } from "../values/Utilitas";
 
@@ -66,10 +68,19 @@ const FirebaseConfig = () => {
     }
   };
 
+  const searching = async (path, key, value) => {
+    const col = collection(db, path);
+    const q = query(col, where(key, "==", value));
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot;
+  };
+
   return {
     getData,
     addData,
     updateDataSpecifict,
+    searching,
   };
 };
 

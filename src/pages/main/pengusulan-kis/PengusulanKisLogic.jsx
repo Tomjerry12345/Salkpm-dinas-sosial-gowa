@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import FirebaseConfig from "../../../config/FirebaseConfig";
 import { constantKecamatan } from "../../../values/Constant";
 import InputValidator from "../../../values/InputValidator";
-import { logged, setLocalItem } from "../../../values/Utilitas";
+import { setLocalItem } from "../../../values/Utilitas";
 
 const PengusulanKisLogic = () => {
   const [open, setOpen] = useState(false);
@@ -55,7 +55,6 @@ const PengusulanKisLogic = () => {
     snapshot.forEach((doc) => {
       const docData = doc.data();
       listData.push(docData);
-      logged(`data => ${JSON.stringify(docData)}`);
     });
     setData(listData);
   };
@@ -109,7 +108,6 @@ const PengusulanKisLogic = () => {
   const onTambah = async (e) => {
     setClick(true);
     const valid = validator.checkNotValidAll();
-    logged(`validator.checkNotValidAll => ${valid}`);
 
     if (!valid) {
       // alert("false");

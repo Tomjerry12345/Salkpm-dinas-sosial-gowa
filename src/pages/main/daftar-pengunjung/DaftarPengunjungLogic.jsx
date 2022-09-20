@@ -34,6 +34,12 @@ const DaftarPengunjungLogic = () => {
 
   const [indexKecamatan, setIndexKecamatan] = useState(null);
 
+  const [inputFilter, setInputFilter] = useState({
+    filter_kecamatan: "",
+    filter_jenis_layanan: "",
+    filter_nik_kk: "",
+  });
+
   const [notif, setNotif] = useState({
     open: false,
     message: "",
@@ -44,14 +50,37 @@ const DaftarPengunjungLogic = () => {
 
   const validator = InputValidator(input);
 
-  const { addData, getData } = FirebaseConfig();
+  const { addData, getData, searching } = FirebaseConfig();
 
   useEffect(() => {
-    getAllData();
-  }, []);
+    const { filter_jenis_layanan, filter_nik_kk, filter_kecamatan } =
+      inputFilter;
+
+    if (filter_jenis_layanan !== "") {
+      getAllDataFilter("jenis_layanan", filter_jenis_layanan);
+    } else if (filter_kecamatan !== "") {
+      getAllDataFilter("kecamatan", filter_kecamatan);
+    } else if (filter_nik_kk !== "") {
+      getAllDataFilter("nik", filter_nik_kk);
+    } else {
+      getAllData();
+    }
+  }, [inputFilter]);
 
   const getAllData = async () => {
     const snapshot = await getData("pengunjung");
+    let listData = [];
+
+    snapshot.forEach((doc) => {
+      const docData = doc.data();
+      listData.push(docData);
+      logged(`data => ${JSON.stringify(docData)}`);
+    });
+    setData(listData);
+  };
+
+  const getAllDataFilter = async (key, value) => {
+    const snapshot = await searching("pengunjung", key, value);
     let listData = [];
 
     snapshot.forEach((doc) => {
@@ -95,6 +124,15 @@ const DaftarPengunjungLogic = () => {
         },
       });
     }
+  };
+
+  const onChangeFilter = (event) => {
+    const { name, value } = event.target;
+    logged(`${name} => ${value}`);
+    setInputFilter({
+      ...inputFilter,
+      [name]: value,
+    });
   };
 
   const onChangeDate = (value) => {
@@ -158,6 +196,7 @@ const DaftarPengunjungLogic = () => {
       disableButton,
       onChangeDate,
       resSucces,
+      onChangeFilter,
     },
     value: {
       open,
