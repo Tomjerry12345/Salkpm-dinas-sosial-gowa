@@ -18,7 +18,7 @@ const LoginPage = () => {
     <>
       <Grid container>
         <Grid item md={6} className="bg1 fullHeight">
-          test
+          <img src="background.jpg" height="580" />
         </Grid>
         <Grid item md={6} className="fullHeight">
           <Stack

@@ -111,7 +111,7 @@ const DaftarPengunjungPage = () => {
           <TextField
             name="filter_nik_kk"
             variant="outlined"
-            label="Input NIK / No. KK"
+            label="Input NIK"
             onChange={func.onChangeFilter}
           />
         </Stack>

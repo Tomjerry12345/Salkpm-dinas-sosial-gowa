@@ -88,6 +88,7 @@ const DaftarPengunjungLogic = () => {
       listData.push(docData);
       logged(`data => ${JSON.stringify(docData)}`);
     });
+
     setData(listData);
   };
 

@@ -3,6 +3,7 @@ import { getAnalytics } from "firebase/analytics";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -76,11 +77,22 @@ const FirebaseConfig = () => {
     return querySnapshot;
   };
 
+  const deleteAllData = async (path) => {
+    logged(`deleteAllData`);
+    const allData = await getData(path);
+
+    allData.docs.forEach(async (obj) => await deleteDoc(doc(db, path, obj.id)));
+    // allData.docs.forEach(async (obj) =>
+    //   logged(`id => ${JSON.stringify(obj.id)}`)
+    // );
+  };
+
   return {
     getData,
     addData,
     updateDataSpecifict,
     searching,
+    deleteAllData,
   };
 };
 

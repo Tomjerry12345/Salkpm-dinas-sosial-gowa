@@ -40,7 +40,7 @@ const Drawer = styled(MuiDrawer, {
 const DrawerComponent = ({ open, toggleDrawer }) => {
   const { onClick, isSelectedPage } = DrawerLogic();
   return (
-    <Drawer variant="permanent" open={open}>
+    <Drawer variant="permanent" open={true}>
       <Toolbar
         sx={{
           display: "flex",

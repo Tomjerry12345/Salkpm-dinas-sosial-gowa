@@ -12,6 +12,7 @@ import { colorPrimary } from "../../../values/Colors";
 
 import DtksLogic from "./DtksLogic";
 import { DataGrid } from "@mui/x-data-grid";
+import ModalNotif from "../../../component/modal/ModalNotif";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -64,6 +65,7 @@ const rows = [
 
 const DtksPage = () => {
   const { value, func } = DtksLogic();
+  const { open, variant, message } = value.notif;
   return (
     <>
       <Typography variant="h5">Cek DTKS</Typography>
@@ -92,7 +94,13 @@ const DtksPage = () => {
           ) : null}
         </Stack>
 
-        <TextField variant="outlined" label="Input NIK / No. KK" />
+        <TextField
+          name="filter_nik_kk"
+          variant="outlined"
+          label="Input NIK / No. KK"
+          onChange={func.onChangeFilter}
+          onKeyDown={func.onSearch}
+        />
       </Stack>
 
       {/* <TableContainer component={Paper}>
@@ -137,6 +145,15 @@ const DtksPage = () => {
           Download Data
         </Button>
       </Stack>
+
+      {/* modal */}
+      <ModalNotif
+        open={open}
+        setOpen={value.setNotif}
+        variant={variant}
+        message={message}
+        onSucces={func.resSucces}
+      />
     </>
   );
 };
