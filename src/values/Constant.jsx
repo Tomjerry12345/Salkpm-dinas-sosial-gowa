@@ -22,12 +22,17 @@ export const constantKelengkapanBerkas = [
   ],
   [
     { label: "KIS", name: "kis" },
-    { label: "SKTM", name: "sktm" },
-    { label: "Domisili", name: "domisili" },
+    { label: "SKTM Desa/Kelurahan", name: "sktm_desa_kelurahan" },
   ],
 ];
 
-export const constantJenisLayanan = ["Usulan KIS", "SKTM", "PKH", "BPNT"];
+export const constantJenisLayanan = [
+  "Usulan KIS",
+  "SKTM",
+  "PKH",
+  "BPNT",
+  "Reaktivasi JKN",
+];
 
 export const constantPisat = ["Peserta", "Suami", "Istri", "Anak", "Tambahan"];
 

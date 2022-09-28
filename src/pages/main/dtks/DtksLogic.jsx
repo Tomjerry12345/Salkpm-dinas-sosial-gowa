@@ -21,31 +21,50 @@ const DtksLogic = () => {
     // filter_jenis_layanan: "",
     filter_nik_kk: "",
   });
-  const { addData, getData, deleteAllData } = FirebaseConfig();
+  const { addData, getData, deleteAllData, searching } = FirebaseConfig();
 
   useEffect(() => {
     const movePage = getLocalItem("move-page");
     logged(`movePage => ${movePage}`);
     if (movePage !== "null") {
       navigate(movePage);
+    } else {
+      getAllData();
+      // test();
     }
     setLocalItem("move-page", null);
   }, []);
 
-  // useEffect(() => {
-  //   const { filter_nik_kk } = inputFilter;
-  //   // if (filter_jenis_layanan !== "") {
-  //   //   getAllDataFilter("jenis_layanan", filter_jenis_layanan);
-  //   // } else if (filter_kecamatan !== "") {
-  //   //   getAllDataFilter("kecamatan", filter_kecamatan);
-  //   // } else if (filter_nik_kk !== "") {
-  //   //   getAllDataFilter("nik", filter_nik_kk);
-  //   // } else {
-  //   // getAllData();
-  //   // }
-  //   // deleteAllData("dtks");
+  // const test = async () => {
+  //   let testData = ["1", "2", "3"];
 
-  // }, []);
+  //   const promise = testData.forEach(async (val, i) => {
+  //     const all = await true;
+  //     return all;
+  //   });
+
+  //   const testPro = await Promise.all(promise);
+  //   logged(`testPro => ${testPro}`);
+  // };
+
+  useEffect(() => {
+    const { filter_nik_kk } = inputFilter;
+    if (filter_nik_kk !== "") {
+      getAllDataFilter("NIK", filter_nik_kk, false);
+    } else {
+      getAllData();
+    }
+    // if (filter_jenis_layanan !== "") {
+    //   getAllDataFilter("jenis_layanan", filter_jenis_layanan);
+    // } else if (filter_kecamatan !== "") {
+    //   getAllDataFilter("kecamatan", filter_kecamatan);
+    // } else if (filter_nik_kk !== "") {
+    //   getAllDataFilter("nik", filter_nik_kk);
+    // } else {
+    // getAllData();
+    // }
+    // deleteAllData("dtks");
+  }, [inputFilter]);
 
   const getAllData = async () => {
     const snapshot = await getData("dtks");
@@ -59,19 +78,27 @@ const DtksLogic = () => {
     setData(listData);
   };
 
-  // const getAllDataFilter = async (key, value) => {
-  //   // const snapshot = await searching("pengunjung", key, value);
-  //   // let listData = [];
-  //   // snapshot.forEach((doc) => {
-  //   //   const docData = doc.data();
-  //   //   listData.push(docData);
-  //   //   logged(`data => ${JSON.stringify(docData)}`);
-  //   // });
-  //   // setData(listData);
-  //   data.forEach((val) => {
-  //     logged(`val => ${JSON.stringify(val)}`);
-  //   });
-  // };
+  const getAllDataFilter = async (key, value, isStopped) => {
+    const snapshot = await searching("dtks", key, value);
+
+    // const checkedEmpty = Object.keys(snapshot.).length;
+
+    if (snapshot.empty) {
+      logged(`empty`);
+      if (!isStopped) {
+        getAllDataFilter("NOKK", value, true);
+      }
+    } else {
+      logged("not empty");
+      let listData = [];
+      snapshot.forEach((doc) => {
+        const docData = doc.data();
+        listData.push(docData);
+        logged(`data => ${JSON.stringify(docData)}`);
+      });
+      setData(listData);
+    }
+  };
 
   const onClickUpload = () => {
     inputUpload.current.click();
@@ -90,27 +117,14 @@ const DtksLogic = () => {
       const { filter_nik_kk } = inputFilter;
       if (filter_nik_kk !== "") {
         logged(`filter_nik_kk ${filter_nik_kk}`);
-        const list = [];
-        dataAll.forEach((val) => {
-          if (val["NIK"] === filter_nik_kk || val["NOKK"] === filter_nik_kk) {
-            list.push(val);
-          }
-          // logged(`val => ${JSON.stringify(val["NIK"])}`);
-        });
-        setData(list);
+        getAllDataFilter("NIK", filter_nik_kk, false);
       } else {
-        setData(dataAll);
+        getAllData();
       }
     }
   };
 
   const onChangeInputUpload = (e) => {
-    setNotif({
-      open: true,
-      message: "Sedang di proses...",
-      variant: "progress",
-    });
-
     let selectedFile = e.target.files[0];
 
     logged(`selectedFile =>${selectedFile.type}`);
@@ -130,17 +144,31 @@ const DtksLogic = () => {
 
     logged(`data => ${JSON.stringify(data1[0]["NAMA"])}`);
 
-    // data1.forEach(async (val, i) => {
-    //   if (i <= 1000) {
-    //     await addData("dtks", val);
-    //   }
-    // });
+    logged(`data.length => ${data.length}`);
 
-    setNotif({
-      open: true,
-      message: "Data berhasil di tambahkan",
-      variant: "success",
-    });
+    if (data.length === 0) {
+      setNotif({
+        open: true,
+        variant: "progress",
+      });
+
+      data1.forEach(async (val, i) => {
+        if (i <= 500) {
+          await addData("dtks", val);
+          logged(`upload ${i}`);
+        }
+      });
+
+      setNotif({
+        open: true,
+        message: "Data berhasil di tambahkan",
+        variant: "success",
+      });
+    } else {
+      // alert("data tidak tersedia");
+      const test = await deleteAllData("dtks");
+      logged(`test => ${JSON.stringify(test)}`);
+    }
 
     // const res = await addData("dtks", data1);
 
@@ -158,8 +186,8 @@ const DtksLogic = () => {
     //   });
     // }
 
-    setData(data1);
-    setDataAll(data1);
+    // setData(data1);
+    // setDataAll(data1);
   };
 
   const resSucces = () => {
