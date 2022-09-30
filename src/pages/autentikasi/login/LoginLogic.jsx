@@ -50,6 +50,8 @@ const LoginLogic = () => {
           input.password === data.password
         ) {
           localStorage.setItem("auth", "true");
+          localStorage.setItem("move-page", "null");
+          localStorage.setItem("index-menu", "null");
           navigate("/main");
         } else {
           setNotif({

@@ -7,7 +7,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Stack } from "@mui/system";
-import { makeStyles } from "@mui/styles";
 import {
   Box,
   Button,
@@ -38,26 +37,40 @@ import {
 import { constantKecamatan } from "../../../values/Constant";
 import "./DaftarPengunjung.scss";
 import ModalNotif from "../../../component/modal/ModalNotif";
+import { DataGrid } from "@mui/x-data-grid";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: colorPrimary,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
+const renderDetailsButton = (params) => {
+  return (
+    <strong>
+      <Button variant="outlined">Detail</Button>
+    </strong>
+  );
+};
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
+const columns = [
+  { field: "nik", headerName: "NIK", width: 150 },
+  { field: "no_kk", headerName: "NoKK", width: 150 },
+  { field: "nama_pengunjung", headerName: "Nama Pengunjung", width: 150 },
+  { field: "kecamatan", headerName: "Kecamatan", width: 120 },
+  { field: "kelurahan", headerName: "Kelurahan", width: 120 },
+  { field: "jenis_layanan", headerName: "Jenis Layanan", width: 150 },
+  {
+    field: "action",
+    headerName: "Action",
+    width: 120,
+    renderCell: renderDetailsButton,
+    disableClickEventBubbling: true,
   },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
+  // {
+  //   field: "fullName",
+  //   headerName: "Full name",
+  //   description: "This column has a value getter and is not sortable.",
+  //   sortable: false,
+  //   width: 160,
+  //   valueGetter: (params) =>
+  //     `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+  // },
+];
 
 const DaftarPengunjungPage = () => {
   const { func, value } = DaftarPengunjungLogic();
@@ -70,7 +83,12 @@ const DaftarPengunjungPage = () => {
       <Stack sx={{ mb: 4, mt: 4 }} direction="horizontal">
         <FormControl sx={{ mr: 2, minWidth: 150 }}>
           <InputLabel id="filter_kecamatan">Kecamatan</InputLabel>
-          <Select labelId="filter_kecamatan" label="Kecamatan">
+          <Select
+            name="filter_kecamatan"
+            labelId="filter_kecamatan"
+            label="Kecamatan"
+            onChange={func.onChangeFilter}
+          >
             {constantKecamatan.map((kec) => (
               <MenuItem value={kec}>{kec}</MenuItem>
             ))}
@@ -78,14 +96,24 @@ const DaftarPengunjungPage = () => {
         </FormControl>
         <FormControl sx={{ minWidth: 170 }}>
           <InputLabel id="filter_jenis_layanan">Jenis layanan</InputLabel>
-          <Select labelId="filter_jenis_layanan" label="Jenis layanan">
+          <Select
+            name="filter_jenis_layanan"
+            labelId="filter_jenis_layanan"
+            label="Jenis layanan"
+            onChange={func.onChangeFilter}
+          >
             {constantJenisLayanan.map((value) => (
               <MenuItem value={value}>{value}</MenuItem>
             ))}
           </Select>
         </FormControl>
         <Stack alignItems="flex-end" style={{ width: "100vw" }}>
-          <TextField variant="outlined" label="Input NIK / No. KK" />
+          <TextField
+            name="filter_nik_kk"
+            variant="outlined"
+            label="Input NIK"
+            onChange={func.onChangeFilter}
+          />
         </Stack>
       </Stack>
 
@@ -116,47 +144,15 @@ const DaftarPengunjungPage = () => {
 };
 
 const ShowData = ({ value }) => (
-  <TableContainer component={Paper}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
-      <TableHead>
-        <TableRow>
-          <StyledTableCell>No</StyledTableCell>
-          <StyledTableCell align="center">Nama</StyledTableCell>
-          <StyledTableCell align="center">Alamat</StyledTableCell>
-          <StyledTableCell align="center">Jenis layanan</StyledTableCell>
-          <StyledTableCell align="center">No.KK</StyledTableCell>
-          <StyledTableCell align="center">NIK</StyledTableCell>
-          <StyledTableCell align="center">Tanggal Lahir</StyledTableCell>
-          <StyledTableCell align="center"></StyledTableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {value.data &&
-          value.data.map((row, i) => (
-            <StyledTableRow key={i + 1}>
-              <StyledTableCell component="th" scope="row">
-                {i + 1}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                {row.nama_pengunjung}
-              </StyledTableCell>
-              <StyledTableCell align="center">{row.alamat}</StyledTableCell>
-              <StyledTableCell align="center">
-                {row.jenis_layanan}
-              </StyledTableCell>
-              <StyledTableCell align="center">{row.no_kk}</StyledTableCell>
-              <StyledTableCell align="center">{row.nik}</StyledTableCell>
-              <StyledTableCell align="center">
-                {row.tanggal_lahir}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                <Button variant="outlined">Detail</Button>
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
+  <div style={{ height: 400, width: "100%" }}>
+    <DataGrid
+      rows={value.data}
+      columns={columns}
+      pageSize={5}
+      rowsPerPageOptions={[5]}
+      getRowId={(row) => row["nik"]}
+    />
+  </div>
 );
 
 const TambahData = ({ func, value }) => {

@@ -36,6 +36,7 @@ import {
 } from "../../../values/Constant";
 import "./PengusulanKis.scss";
 import ModalNotif from "../../../component/modal/ModalNotif";
+import { DataGrid } from "@mui/x-data-grid";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -56,6 +57,39 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
+
+const renderDetailsButton = (params) => {
+  return (
+    <strong>
+      <Button variant="outlined">Detail</Button>
+    </strong>
+  );
+};
+
+const columns = [
+  { field: "nik", headerName: "NIK", width: 150 },
+  { field: "no_kk", headerName: "NoKK", width: 150 },
+  { field: "nama_lengkap", headerName: "Nama Lengkap", width: 150 },
+  { field: "kecamatan", headerName: "Kecamatan", width: 120 },
+  { field: "kelurahan", headerName: "Kelurahan", width: 120 },
+  { field: "pisat", headerName: "PISAT", width: 150 },
+  {
+    field: "action",
+    headerName: "Action",
+    width: 120,
+    renderCell: renderDetailsButton,
+    disableClickEventBubbling: true,
+  },
+  // {
+  //   field: "fullName",
+  //   headerName: "Full name",
+  //   description: "This column has a value getter and is not sortable.",
+  //   sortable: false,
+  //   width: 160,
+  //   valueGetter: (params) =>
+  //     `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+  // },
+];
 
 const PengusulanKisPage = () => {
   const { func, value } = PengusulanKisLogic();
@@ -93,45 +127,54 @@ const PengusulanKisPage = () => {
 };
 
 const ShowData = ({ value }) => (
-  <TableContainer component={Paper}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
-      <TableHead>
-        <TableRow>
-          <StyledTableCell>No</StyledTableCell>
-          <StyledTableCell align="center">Nama</StyledTableCell>
-          <StyledTableCell align="center">Alamat</StyledTableCell>
-          <StyledTableCell align="center">PISAT</StyledTableCell>
-          <StyledTableCell align="center">No.KK</StyledTableCell>
-          <StyledTableCell align="center">NIK</StyledTableCell>
-          <StyledTableCell align="center">Tanggal Lahir</StyledTableCell>
-          <StyledTableCell align="center"></StyledTableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {value.data &&
-          value.data.map((row, i) => (
-            <StyledTableRow key={i + 1}>
-              <StyledTableCell component="th" scope="row">
-                {i + 1}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                {row.nama_lengkap}
-              </StyledTableCell>
-              <StyledTableCell align="center">{row.alamat}</StyledTableCell>
-              <StyledTableCell align="center">{row.pisat}</StyledTableCell>
-              <StyledTableCell align="center">{row.no_kk}</StyledTableCell>
-              <StyledTableCell align="center">{row.nik}</StyledTableCell>
-              <StyledTableCell align="center">
-                {row.tanggal_lahir}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                <Button variant="outlined">Detail</Button>
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
+  // <TableContainer component={Paper}>
+  //   <Table sx={{ minWidth: 700 }} aria-label="customized table">
+  //     <TableHead>
+  //       <TableRow>
+  //         <StyledTableCell>No</StyledTableCell>
+  //         <StyledTableCell align="center">Nama</StyledTableCell>
+  //         <StyledTableCell align="center">Alamat</StyledTableCell>
+  //         <StyledTableCell align="center">PISAT</StyledTableCell>
+  //         <StyledTableCell align="center">No.KK</StyledTableCell>
+  //         <StyledTableCell align="center">NIK</StyledTableCell>
+  //         <StyledTableCell align="center">Tanggal Lahir</StyledTableCell>
+  //         <StyledTableCell align="center"></StyledTableCell>
+  //       </TableRow>
+  //     </TableHead>
+  //     <TableBody>
+  //       {value.data &&
+  //         value.data.map((row, i) => (
+  //           <StyledTableRow key={i + 1}>
+  //             <StyledTableCell component="th" scope="row">
+  //               {i + 1}
+  //             </StyledTableCell>
+  //             <StyledTableCell align="center">
+  //               {row.nama_lengkap}
+  //             </StyledTableCell>
+  //             <StyledTableCell align="center">{row.alamat}</StyledTableCell>
+  //             <StyledTableCell align="center">{row.pisat}</StyledTableCell>
+  //             <StyledTableCell align="center">{row.no_kk}</StyledTableCell>
+  //             <StyledTableCell align="center">{row.nik}</StyledTableCell>
+  //             <StyledTableCell align="center">
+  //               {row.tanggal_lahir}
+  //             </StyledTableCell>
+  //             <StyledTableCell align="center">
+  //               <Button variant="outlined">Detail</Button>
+  //             </StyledTableCell>
+  //           </StyledTableRow>
+  //         ))}
+  //     </TableBody>
+  //   </Table>
+  // </TableContainer>
+  <div style={{ height: 400, width: "100%" }}>
+    <DataGrid
+      rows={value.data}
+      columns={columns}
+      pageSize={5}
+      rowsPerPageOptions={[5]}
+      getRowId={(row) => row["nik"]}
+    />
+  </div>
 );
 
 const TambahData = ({ value, func }) => {

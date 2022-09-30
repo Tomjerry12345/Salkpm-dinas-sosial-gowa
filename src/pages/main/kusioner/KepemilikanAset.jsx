@@ -144,6 +144,96 @@ const KepemilikanAset = () => {
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel id="demo-row-radio-buttons-group-label">
+          Rumah ditempat lain
+        </FormLabel>
+        <RadioGroup
+          row
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
+        >
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel id="demo-row-radio-buttons-group-label">Lahan</FormLabel>
+        <RadioGroup
+          row
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
+        >
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel id="demo-row-radio-buttons-group-label">
+          {" "}
+          Ternak Yang dimiliki:
+        </FormLabel>
+        <RadioGroup
+          row
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
+        ></RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel id="demo-row-radio-buttons-group-label">Kambing</FormLabel>
+        <RadioGroup
+          row
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
+        >
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel id="demo-row-radio-buttons-group-label">Kerbau</FormLabel>
+        <RadioGroup
+          row
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
+        >
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel id="demo-row-radio-buttons-group-label">Sapi</FormLabel>
+        <RadioGroup
+          row
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
+        >
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel id="demo-row-radio-buttons-group-label">Kuda</FormLabel>
+        <RadioGroup
+          row
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
+        >
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel id="demo-row-radio-buttons-group-label">Babi</FormLabel>
+        <RadioGroup
+          row
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
+        >
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
     </div>
   );
 };
