@@ -53,8 +53,7 @@ const DaftarPengunjungLogic = () => {
   const { addData, getData, searching } = FirebaseConfig();
 
   useEffect(() => {
-    const { filter_jenis_layanan, filter_nik_kk, filter_kecamatan } =
-      inputFilter;
+    const { filter_jenis_layanan, filter_nik_kk, filter_kecamatan } = inputFilter;
 
     if (filter_jenis_layanan !== "") {
       getAllDataFilter("jenis_layanan", filter_jenis_layanan);
@@ -65,6 +64,7 @@ const DaftarPengunjungLogic = () => {
     } else {
       getAllData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputFilter]);
 
   const getAllData = async () => {
@@ -73,8 +73,12 @@ const DaftarPengunjungLogic = () => {
 
     snapshot.forEach((doc) => {
       const docData = doc.data();
+      // const kelengkapanBerkas = docData.kelengkapan_berkas;
+      // logged(`kelengkapanBerkas => ${JSON.stringify(kelengkapanBerkas)}`);
+      // kelengkapanBerkas.map((val) => {
+      //   logged(`val => ${val}`);
+      // });
       listData.push(docData);
-      logged(`data => ${JSON.stringify(docData)}`);
     });
     setData(listData);
   };
@@ -86,7 +90,6 @@ const DaftarPengunjungLogic = () => {
     snapshot.forEach((doc) => {
       const docData = doc.data();
       listData.push(docData);
-      logged(`data => ${JSON.stringify(docData)}`);
     });
 
     setData(listData);
@@ -181,8 +184,7 @@ const DaftarPengunjungLogic = () => {
 
   const onError = (value) => (click ? validator.checkNotValid(value) : null);
 
-  const onHelperText = (value) =>
-    click ? validator.messageNotValid(value) : null;
+  const onHelperText = (value) => (click ? validator.messageNotValid(value) : null);
 
   const disableButton = () => (click ? validator.checkNotValidAll() : null);
 
