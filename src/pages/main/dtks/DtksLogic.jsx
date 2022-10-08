@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useEffect } from "react";
-import { getLocalItem, logged, setLocalItem } from "../../../values/Utilitas";
+import { getLocalItem, setLocalItem } from "../../../values/Utilitas";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { useState } from "react";
@@ -25,7 +25,7 @@ const DtksLogic = () => {
 
   useEffect(() => {
     const movePage = getLocalItem("move-page");
-    logged(`movePage => ${movePage}`);
+
     if (movePage !== "null") {
       navigate(movePage);
     } else {
@@ -73,7 +73,6 @@ const DtksLogic = () => {
     snapshot.forEach((doc) => {
       const docData = doc.data();
       listData.push(docData);
-      logged(`data => ${JSON.stringify(docData)}`);
     });
     setData(listData);
   };
@@ -84,17 +83,14 @@ const DtksLogic = () => {
     // const checkedEmpty = Object.keys(snapshot.).length;
 
     if (snapshot.empty) {
-      logged(`empty`);
       if (!isStopped) {
         getAllDataFilter("NOKK", value, true);
       }
     } else {
-      logged("not empty");
       let listData = [];
       snapshot.forEach((doc) => {
         const docData = doc.data();
         listData.push(docData);
-        logged(`data => ${JSON.stringify(docData)}`);
       });
       setData(listData);
     }
@@ -116,7 +112,6 @@ const DtksLogic = () => {
     if (e.key === "Enter") {
       const { filter_nik_kk } = inputFilter;
       if (filter_nik_kk !== "") {
-        logged(`filter_nik_kk ${filter_nik_kk}`);
         getAllDataFilter("NIK", filter_nik_kk, false);
       } else {
         getAllData();
@@ -126,8 +121,6 @@ const DtksLogic = () => {
 
   const onChangeInputUpload = (e) => {
     let selectedFile = e.target.files[0];
-
-    logged(`selectedFile =>${selectedFile.type}`);
 
     let reader = new FileReader();
     reader.readAsArrayBuffer(selectedFile);
@@ -142,10 +135,6 @@ const DtksLogic = () => {
     const worksheet = workbook.Sheets[worksheetname];
     const data1 = XLSX.utils.sheet_to_json(worksheet);
 
-    logged(`data => ${JSON.stringify(data1[0]["NAMA"])}`);
-
-    logged(`data.length => ${data.length}`);
-
     if (data.length === 0) {
       setNotif({
         open: true,
@@ -155,7 +144,6 @@ const DtksLogic = () => {
       data1.forEach(async (val, i) => {
         if (i <= 500) {
           await addData("dtks", val);
-          logged(`upload ${i}`);
         }
       });
 
@@ -167,7 +155,6 @@ const DtksLogic = () => {
     } else {
       // alert("data tidak tersedia");
       const test = await deleteAllData("dtks");
-      logged(`test => ${JSON.stringify(test)}`);
     }
 
     // const res = await addData("dtks", data1);

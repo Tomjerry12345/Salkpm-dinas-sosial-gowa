@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import FirebaseConfig from "../../../config/FirebaseConfig";
 import { constantKecamatan } from "../../../values/Constant";
 import InputValidator from "../../../values/InputValidator";
-import { logged, setLocalItem } from "../../../values/Utilitas";
+import { setLocalItem } from "../../../values/Utilitas";
 
 const DaftarPengunjungLogic = () => {
   const [open, setOpen] = useState(false);
@@ -132,7 +132,6 @@ const DaftarPengunjungLogic = () => {
 
   const onChangeFilter = (event) => {
     const { name, value } = event.target;
-    logged(`${name} => ${value}`);
     setInputFilter({
       ...inputFilter,
       [name]: value,

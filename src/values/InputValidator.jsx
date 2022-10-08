@@ -1,12 +1,20 @@
 import { useState } from "react";
-import { logged } from "./Utilitas";
-const InputValidator = (input) => {
+import { logO } from "./Utilitas";
+const InputValidator = (input, x) => {
   const [notValid, setNotValid] = useState(() => {
     let i = [];
     // eslint-disable-next-line no-unused-vars
-    for (let _ in input) {
-      i.push(true);
+
+    if (input !== null) {
+      for (let _ in input) {
+        i.push(true);
+      }
+    } else {
+      for (let j = 0; j < x; j++) {
+        i.push(true);
+      }
     }
+
     return i;
   });
 
@@ -25,6 +33,7 @@ const InputValidator = (input) => {
   };
 
   const checkNotValidAll = () => {
+    logO("notValid", notValid);
     let notValidAll = false;
 
     notValid.map((value) => {
@@ -45,8 +54,6 @@ const InputValidator = (input) => {
   const checkEmpty = (value) => {
     return value === "" ? true : false;
   };
-
-  logged(`notValid => ${notValid}`);
 
   return {
     checkNotValid,

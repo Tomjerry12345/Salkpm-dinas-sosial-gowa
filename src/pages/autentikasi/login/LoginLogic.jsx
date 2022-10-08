@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FirebaseConfig from "../../../config/FirebaseConfig";
 import InputValidator from "../../../values/InputValidator";
-import { logged } from "../../../values/Utilitas";
 
 const LoginLogic = () => {
   let navigate = useNavigate();
@@ -44,11 +43,8 @@ const LoginLogic = () => {
       const snapshot = await getData("admin");
       snapshot.forEach((doc) => {
         const data = doc.data();
-        logged(`${doc.id} => ${JSON.stringify(data)}`);
-        if (
-          input.username === data.username &&
-          input.password === data.password
-        ) {
+
+        if (input.username === data.username && input.password === data.password) {
           localStorage.setItem("auth", "true");
           localStorage.setItem("move-page", "null");
           localStorage.setItem("index-menu", "null");
@@ -66,8 +62,7 @@ const LoginLogic = () => {
 
   const onError = (value) => (click ? validator.checkNotValid(value) : null);
 
-  const onHelperText = (value) =>
-    click ? validator.messageNotValid(value) : null;
+  const onHelperText = (value) => (click ? validator.messageNotValid(value) : null);
 
   const disableButton = () => (click ? validator.checkNotValidAll() : null);
 

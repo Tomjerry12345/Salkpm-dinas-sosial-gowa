@@ -1,18 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  getFirestore,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { logged } from "../values/Utilitas";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCuitc5Ajzgl1k9IrIbYPrnzcRNmyReHlY",
@@ -47,11 +35,9 @@ const FirebaseConfig = () => {
       if (res) {
         return true;
       } else {
-        logged(`error add ${res} => terjadi kesalahn`);
         return false;
       }
     } catch (e) {
-      logged(`error add => ${e}`);
       return false;
     }
   };
@@ -75,7 +61,6 @@ const FirebaseConfig = () => {
       });
       return true;
     } catch (e) {
-      logged(`error update => ${e}`);
       return false;
     }
   };
@@ -89,15 +74,12 @@ const FirebaseConfig = () => {
   };
 
   const deleteAllData = async (path) => {
-    logged(`deleteAllData`);
     const allData = await getData(path);
     const promise = allData.docs.forEach((obj, i) => {
       setTimeout(async () => {
         // await deleteDoc(doc(db, path, obj.id));
-        logged(`obj.id => ${obj.id}`);
-        logged(`i => ${i}`);
+
         if (i >= allData.docs.length - 1) {
-          logged(`length => ${allData.docs.length}`);
           const test = await true;
           return test;
         }
