@@ -1,4 +1,4 @@
-import { logS } from "../values/Utilitas";
+import { logO, logS } from "../values/Utilitas";
 import ResultP0 from "./ResultP0";
 import ResultP1 from "./ResultP1";
 import ResultP2 from "./ResultP2";
@@ -9,13 +9,14 @@ const testing1 = ["Tv", "Kulkas", "Kayu", "Papan", "Sumur pribadi", "900 watt"];
 const testing2 = ["Tv", "Kulkas", "Sepeda", "Kambing", "Babi", "Bambu", "Anyaman bambu", "450 watt"];
 
 const ForwardChaining = () => {
-  const clasify = () => {
+  const clasify = (data) => {
+    logO("data", data);
     let result = "";
     const p0 = ResultP0();
     const p1 = ResultP1();
     const p2 = ResultP2();
     const p3 = ResultP3();
-    testing2.forEach((val) => {
+    data.forEach((val) => {
       if (p0.result(val)) {
         result = "P0";
       } else if (p1.result(val)) {

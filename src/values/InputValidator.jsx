@@ -33,7 +33,6 @@ const InputValidator = (input, x) => {
   };
 
   const checkNotValidAll = () => {
-    logO("notValid", notValid);
     let notValidAll = false;
 
     notValid.map((value) => {

@@ -4,139 +4,181 @@ const KepemilikanAset = ({ onChange }) => {
   return (
     <div className="custom-radio">
       <FormControl>
-        <FormLabel id="demo-row-radio-buttons-group-label">Tabung</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group" onChange={onChange}>
+        <FormLabel>Tabung</FormLabel>
+        <RadioGroup row name="Tabung" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       {/* Batas copy */}
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Lemari ES</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Lemari ES</FormLabel>
+        <RadioGroup row name="Lemari ES" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">AC</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>AC</FormLabel>
+        <RadioGroup row name="AC" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Televisi</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Hp</FormLabel>
+        <RadioGroup row name="Hp" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Emas</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Bambu</FormLabel>
+        <RadioGroup row name="Bambu" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Komputer/Laptop</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Anyaman bambu</FormLabel>
+        <RadioGroup row name="Anyaman bambu" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Sepeda</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Air sungai</FormLabel>
+        <RadioGroup row name="Air sungai" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Motor</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>450 watt</FormLabel>
+        <RadioGroup row name="450 watt" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Mobil</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Televisi</FormLabel>
+        <RadioGroup row name="Televisi" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Perahu</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Emas</FormLabel>
+        <RadioGroup row name="Emas" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Kapal</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Komputer</FormLabel>
+        <RadioGroup row name="Komputer" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Handphone</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Laptop</FormLabel>
+        <RadioGroup row name="Laptop" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Rumah ditempat lain</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Sepeda</FormLabel>
+        <RadioGroup row name="Sepeda" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Lahan</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Motor</FormLabel>
+        <RadioGroup row name="Motor" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label"> Ternak Yang dimiliki:</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group"></RadioGroup>
-      </FormControl>
-      <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Kambing</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Mobil</FormLabel>
+        <RadioGroup row name="Mobil" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Kerbau</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Perahu</FormLabel>
+        <RadioGroup row name="Perahu" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Sapi</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Kapal</FormLabel>
+        <RadioGroup row name="Kapal" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Kuda</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Handphone</FormLabel>
+        <RadioGroup row name="Handphone" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel id="demo-row-radio-buttons-group-label">Babi</FormLabel>
-        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+        <FormLabel>Rumah ditempat lain</FormLabel>
+        <RadioGroup row name="Rumah ditempat lain" onChange={(e) => onChange(e, null, "radio")}>
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel>Lahan</FormLabel>
+        <RadioGroup row name="Lahan" onChange={(e) => onChange(e, null, "radio")}>
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel> Ternak Yang dimiliki:</FormLabel>
+        <RadioGroup row name="row-radio-buttons-group"></RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel>Kambing</FormLabel>
+        <RadioGroup row name="Kambing" onChange={(e) => onChange(e, null, "radio")}>
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel>Kerbau</FormLabel>
+        <RadioGroup row name="Kerbau" onChange={(e) => onChange(e, null, "radio")}>
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel>Sapi</FormLabel>
+        <RadioGroup row name="Sapi" onChange={(e) => onChange(e, null, "radio")}>
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel>Kuda</FormLabel>
+        <RadioGroup row name="Kuda" onChange={(e) => onChange(e, null, "radio")}>
+          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
+          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
+        </RadioGroup>
+      </FormControl>
+      <FormControl sx={{ mt: 2 }}>
+        <FormLabel>Babi</FormLabel>
+        <RadioGroup row name="Babi" onChange={(e) => onChange(e, null, "radio")}>
           <FormControlLabel value="iya" control={<Radio />} label="Iya" />
           <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
         </RadioGroup>
