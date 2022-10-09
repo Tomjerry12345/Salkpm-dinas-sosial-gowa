@@ -257,3 +257,21 @@ export const constantKelurahan = [
   ],
 ];
 export const constantJenisKelamin = ["Laki - Laki", "Perempuan"];
+
+export const constantJenisLantai = ["Bambu", "Kayu", "Semen", "Tegel"];
+
+export const constantJenisDinding = ["Anyaman bambu", "Papan", "Tembok"];
+
+export const constantSumberAirMinum = [
+  "Air sungai",
+  "Sumur pribadi",
+  "Air isi ulang",
+  "Air kemasan bermerk",
+];
+
+export const constantDaya = [
+  "450 watt",
+  "900 watt",
+  "1300 watt",
+  ">= 2200 watt",
+];

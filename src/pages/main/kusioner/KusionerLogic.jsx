@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import ForwardChaining from "../../../method/ForwardChaining";
 import InputValidator from "../../../values/InputValidator";
-import { logO, logS } from "../../../values/Utilitas";
+import { log, logO, logS } from "../../../values/Utilitas";
 import KeteranganPerumahan from "./KeteranganPerumahan";
 import DataPribadi from "./DataPribadi";
 import KepemilikanAset from "./KepemilikanAset";
+import { useNavigate } from "react-router-dom";
 
 const steps = ["Data Pribadi", "Kepemilikan Aset", "Keterangan Perumahan"];
 
@@ -18,13 +19,19 @@ const KusionerLogic = () => {
 
   const [click, setClick] = useState(false);
 
+  const [open, setOpen] = useState(false);
+
+  const navigate = useNavigate();
+
   const fc = ForwardChaining();
 
   const validator = InputValidator(null, 2);
 
   useEffect(() => {
-    logO("input", input);
-  }, [input]);
+    // logO("input", input);
+    // const result = fc.clasify();
+    // logO("result", result);
+  }, []);
 
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
@@ -48,16 +55,36 @@ const KusionerLogic = () => {
     }
 
     if (activeStep === steps.length - 1) {
-      alert("finish");
+      // alert("finish");
+      const kusioner = input.kusioner;
+      const jenisLantai = input["jenis_lantai"];
+      const jenisDinding = input["jenis_dinding"];
+      const sumberAirMinum = input["sumber_air_minum"];
+      const daya = input["daya"];
+
+      kusioner.push(jenisLantai);
+      kusioner.push(jenisDinding);
+      kusioner.push(sumberAirMinum);
+      kusioner.push(daya);
+
+      delete input["jenis_lantai"];
+      delete input["jenis_dinding"];
+      delete input["sumber_air_minum"];
+      delete input["daya"];
+
+      logO("show", input);
+
+      setOpen(true);
+      const result = fc.clasify(input.kusioner);
+      setInput({
+        ...input,
+        clasify: result,
+      });
+      // logS("result", result);
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setSkipped(newSkipped);
     }
-
-    // if (activeStep === 1) {
-    //   logS("show");
-    //   fc.clasify(input.kusioner);
-    // }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
   };
 
   const handleBack = () => {
@@ -85,11 +112,19 @@ const KusionerLogic = () => {
 
   const loadContent = (index) => {
     if (index === 0) {
-      return <DataPribadi nama={input.nama} nik={input.nik} onChange={onChange} onError={onError} onHelperText={onHelperText} />;
+      return (
+        <DataPribadi
+          nama={input.nama}
+          nik={input.nik}
+          onChange={onChange}
+          onError={onError}
+          onHelperText={onHelperText}
+        />
+      );
     } else if (index === 1) {
       return <KepemilikanAset onChange={onChange} />;
     } else if (index === 2) {
-      return <KeteranganPerumahan />;
+      return <KeteranganPerumahan onChange={onChange} />;
     }
 
     return null;
@@ -97,12 +132,11 @@ const KusionerLogic = () => {
 
   const onChange = (event, i, variant) => {
     const { name, value } = event.target;
+    logO("value", value);
 
     if (variant === "radio") {
       const newData = [...input.kusioner];
-      const index = newData.findIndex((item) => name === item);
-
-      logO("index", index);
+      // const index = newData.findIndex((item) => name === item);
 
       if (value === "iya") {
         setInput({
@@ -127,13 +161,32 @@ const KusionerLogic = () => {
 
   const onError = (value) => (click ? validator.checkNotValid(value) : null);
 
-  const onHelperText = (value) => (click ? validator.messageNotValid(value) : null);
+  const onHelperText = (value) =>
+    click ? validator.messageNotValid(value) : null;
 
   const disableButton = () => (click ? validator.checkNotValidAll() : null);
 
+  const onBackHome = () => {
+    setOpen(false);
+    navigate("/");
+  };
+
   return {
-    func: { onChange, onError, onHelperText, disableButton, isStepOptional, isStepSkipped, handleNext, handleBack, handleSkip, handleReset, loadContent },
-    value: { steps, activeStep },
+    func: {
+      onChange,
+      onError,
+      onHelperText,
+      disableButton,
+      isStepOptional,
+      isStepSkipped,
+      handleNext,
+      handleBack,
+      handleSkip,
+      handleReset,
+      loadContent,
+      onBackHome,
+    },
+    value: { steps, activeStep, open, input },
   };
 };
 

@@ -4,6 +4,8 @@ import FirebaseConfig from "../../../config/FirebaseConfig";
 import { constantKecamatan } from "../../../values/Constant";
 import InputValidator from "../../../values/InputValidator";
 import { setLocalItem } from "../../../values/Utilitas";
+import * as XLSX from "xlsx";
+import * as FileSaver from "file-saver";
 
 const PengusulanKisLogic = () => {
   const [open, setOpen] = useState(false);
@@ -146,6 +148,21 @@ const PengusulanKisLogic = () => {
 
   const disableButton = () => (click ? validator.checkNotValidAll() : null);
 
+  const downloadExcell = async (datax) => {
+    datax.forEach((val) => {
+      delete val.id;
+    });
+
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const ws = XLSX.utils.json_to_sheet(datax);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excellBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excellBuffer], { type: fileType });
+    FileSaver.saveAs(data, "pengusulan-kis" + fileExtension);
+  };
+
   return {
     func: {
       handleClickOpen,
@@ -157,6 +174,7 @@ const PengusulanKisLogic = () => {
       onChangeDate,
       onTambah,
       resSucces,
+      downloadExcell,
     },
     value: {
       open,

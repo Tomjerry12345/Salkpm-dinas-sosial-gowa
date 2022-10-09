@@ -126,7 +126,14 @@ const DaftarPengunjungPage = () => {
 
       <TambahData func={func} value={value} />
 
-      <Stack alignItems="flex-end" sx={{ mt: 4 }}>
+      <Stack flexDirection="row" justifyContent="space-between" sx={{ mt: 4 }}>
+        <Button
+          variant="contained"
+          style={{ color: "white" }}
+          onClick={() => func.downloadExcell(value.data)}
+        >
+          Download Data
+        </Button>
         <Button
           variant="contained"
           style={{ color: "white" }}

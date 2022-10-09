@@ -102,35 +102,6 @@ const DtksPage = () => {
           onKeyDown={func.onSearch}
         />
       </Stack>
-
-      {/* <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table" si>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>No</StyledTableCell>
-              <StyledTableCell align="right">Nama</StyledTableCell>
-              <StyledTableCell align="right">Alamat</StyledTableCell>
-              <StyledTableCell align="right">Bantuan</StyledTableCell>
-              <StyledTableCell align="right">No.KK</StyledTableCell>
-              <StyledTableCell align="right">NIK</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {value.data.map((row) => (
-              <StyledTableRow key={row.no}>
-                <StyledTableCell component="th" scope="row">
-                  {row.no}
-                </StyledTableCell>
-                <StyledTableCell align="right">{row["NAMA"]}</StyledTableCell>
-                <StyledTableCell align="right">{row.alamat}</StyledTableCell>
-                <StyledTableCell align="right">{row.bantuan}</StyledTableCell>
-                <StyledTableCell align="right">{row.nokk}</StyledTableCell>
-                <StyledTableCell align="right">{row.nik}</StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
       <div style={{ height: 400, width: "100%" }}>
         <DataGrid
           rows={value.data}
@@ -140,11 +111,6 @@ const DtksPage = () => {
           getRowId={(row) => row["NIK"]}
         />
       </div>
-      <Stack alignItems="flex-end" sx={{ mt: 4 }}>
-        <Button variant="contained" style={{ color: "white" }}>
-          Download Data
-        </Button>
-      </Stack>
 
       {/* modal */}
       <ModalNotif

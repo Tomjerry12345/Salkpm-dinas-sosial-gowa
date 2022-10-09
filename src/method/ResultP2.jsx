@@ -1,3 +1,5 @@
+import { logS } from "../values/Utilitas";
+
 const ResultP2 = () => {
   // P0
   const rRuleA3 = [false, false];
@@ -81,6 +83,8 @@ const ResultP2 = () => {
     ruleL3(val);
 
     let isRuleL3 = !rRuleL3.some((x) => x === false);
+
+    logS("isRuleL3", isRuleL3);
 
     if (ruleY3() || isRuleL3) {
       return true;

@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import FirebaseConfig from "../../../config/FirebaseConfig";
 import { constantKecamatan } from "../../../values/Constant";
 import InputValidator from "../../../values/InputValidator";
-import { setLocalItem } from "../../../values/Utilitas";
+import { logO, setLocalItem } from "../../../values/Utilitas";
+import * as XLSX from "xlsx";
+import * as FileSaver from "file-saver";
 
 const DaftarPengunjungLogic = () => {
   const [open, setOpen] = useState(false);
@@ -53,7 +55,8 @@ const DaftarPengunjungLogic = () => {
   const { addData, getData, searching } = FirebaseConfig();
 
   useEffect(() => {
-    const { filter_jenis_layanan, filter_nik_kk, filter_kecamatan } = inputFilter;
+    const { filter_jenis_layanan, filter_nik_kk, filter_kecamatan } =
+      inputFilter;
 
     if (filter_jenis_layanan !== "") {
       getAllDataFilter("jenis_layanan", filter_jenis_layanan);
@@ -73,12 +76,20 @@ const DaftarPengunjungLogic = () => {
 
     snapshot.forEach((doc) => {
       const docData = doc.data();
-      // const kelengkapanBerkas = docData.kelengkapan_berkas;
-      // logged(`kelengkapanBerkas => ${JSON.stringify(kelengkapanBerkas)}`);
-      // kelengkapanBerkas.map((val) => {
-      //   logged(`val => ${val}`);
-      // });
-      listData.push(docData);
+      const kelengkapanBerkas = docData.kelengkapan_berkas;
+      const newKelengkapanBerkas = [];
+
+      for (const i in kelengkapanBerkas) {
+        if (kelengkapanBerkas[i] === true) {
+          newKelengkapanBerkas.push(i);
+        }
+      }
+
+      delete docData.kelengkapan_berkas;
+      listData.push({
+        ...docData,
+        kelengkapan_berkas: newKelengkapanBerkas.toString(),
+      });
     });
     setData(listData);
   };
@@ -183,9 +194,27 @@ const DaftarPengunjungLogic = () => {
 
   const onError = (value) => (click ? validator.checkNotValid(value) : null);
 
-  const onHelperText = (value) => (click ? validator.messageNotValid(value) : null);
+  const onHelperText = (value) =>
+    click ? validator.messageNotValid(value) : null;
 
   const disableButton = () => (click ? validator.checkNotValidAll() : null);
+
+  const downloadExcell = async (datax, fileName) => {
+    datax.forEach((val) => {
+      delete val.id;
+    });
+
+    logO("datax", datax);
+
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const ws = XLSX.utils.json_to_sheet(datax);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excellBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excellBuffer], { type: fileType });
+    FileSaver.saveAs(data, "daftar-pengunjung" + fileExtension);
+  };
 
   return {
     func: {
@@ -199,6 +228,7 @@ const DaftarPengunjungLogic = () => {
       onChangeDate,
       resSucces,
       onChangeFilter,
+      downloadExcell,
     },
     value: {
       open,
