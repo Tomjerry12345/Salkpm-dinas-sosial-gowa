@@ -3,7 +3,13 @@ import { useNavigate } from "react-router-dom";
 import FirebaseConfig from "../../../config/FirebaseConfig";
 import { constantKecamatan } from "../../../values/Constant";
 import InputValidator from "../../../values/InputValidator";
-import { setLocalItem } from "../../../values/Utilitas";
+import {
+  getMonthNow,
+  getYearNow,
+  logO,
+  logS,
+  setLocalItem,
+} from "../../../values/Utilitas";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
 
@@ -26,6 +32,16 @@ const PengusulanKisLogic = () => {
     kecamatan: "",
     kelurahan: "",
     no_telpon: "",
+    tahun: getYearNow(),
+    bulan: getMonthNow(),
+  });
+
+  const [inputFilter, setInputFilter] = useState({
+    filter_kecamatan: "",
+    filter_jenis_layanan: "",
+    filter_nik_kk: "",
+    filter_bulan: "",
+    filter_tahun: "",
   });
 
   const [data, setData] = useState([]);
@@ -42,13 +58,34 @@ const PengusulanKisLogic = () => {
 
   const navigate = useNavigate();
 
-  const validator = InputValidator(input);
+  const validator = InputValidator(null, 14);
 
-  const { addData, getData } = FirebaseConfig();
+  const { addData, getData, searching, multipleSearching } = FirebaseConfig();
+
+  // useEffect(() => {
+  //   getAllData();
+  // }, []);
 
   useEffect(() => {
-    getAllData();
-  }, []);
+    const {
+      filter_jenis_layanan,
+      filter_nik_kk,
+      filter_kecamatan,
+      filter_bulan,
+      filter_tahun,
+    } = inputFilter;
+
+    if (filter_kecamatan !== "") {
+      getAllDataFilter("kecamatan", filter_kecamatan, "", "");
+    } else if (filter_nik_kk !== "") {
+      getAllDataFilter("nik", filter_nik_kk, "", "");
+    } else if (filter_tahun !== "" && filter_bulan !== "") {
+      getAllDataFilter("tahun", parseInt(filter_tahun), "bulan", filter_bulan);
+    } else {
+      getAllData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputFilter]);
 
   const getAllData = async () => {
     const snapshot = await getData("pengusulan-kis");
@@ -58,6 +95,34 @@ const PengusulanKisLogic = () => {
       const docData = doc.data();
       listData.push(docData);
     });
+    setData(listData);
+  };
+
+  const getAllDataFilter = async (key, value, key1, value1) => {
+    let snapshot;
+
+    snapshot = await searching("pengusulan-kis", key, value);
+
+    if (key !== "" && value !== "" && key1 !== "" && value1 !== "") {
+      logS("multiple", `${key} => ${key1} => ${value} => ${value1}`);
+      snapshot = await multipleSearching(
+        "pengusulan-kis",
+        key,
+        key1,
+        value,
+        value1
+      );
+    } else {
+      snapshot = await searching("pengusulan-kis", key, value);
+    }
+
+    let listData = [];
+
+    snapshot.forEach((doc) => {
+      const docData = doc.data();
+      listData.push(docData);
+    });
+
     setData(listData);
   };
 
@@ -111,7 +176,7 @@ const PengusulanKisLogic = () => {
     setClick(true);
     const valid = validator.checkNotValidAll();
 
-    if (!valid) {
+    if (valid) {
       // alert("false");
       setNotif({
         open: true,
@@ -146,7 +211,7 @@ const PengusulanKisLogic = () => {
   const onHelperText = (value) =>
     click ? validator.messageNotValid(value) : null;
 
-  const disableButton = () => (click ? validator.checkNotValidAll() : null);
+  const disableButton = () => (click ? !validator.checkNotValidAll() : null);
 
   const downloadExcell = async (datax) => {
     datax.forEach((val) => {
@@ -163,6 +228,15 @@ const PengusulanKisLogic = () => {
     FileSaver.saveAs(data, "pengusulan-kis" + fileExtension);
   };
 
+  const onChangeFilter = (event) => {
+    const { name, value } = event.target;
+    logO("name", name);
+    setInputFilter({
+      ...inputFilter,
+      [name]: value,
+    });
+  };
+
   return {
     func: {
       handleClickOpen,
@@ -175,6 +249,7 @@ const PengusulanKisLogic = () => {
       onTambah,
       resSucces,
       downloadExcell,
+      onChangeFilter,
     },
     value: {
       open,

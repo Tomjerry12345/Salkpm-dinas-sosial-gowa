@@ -35,12 +35,19 @@ const InputValidator = (input, x) => {
   const checkNotValidAll = () => {
     let notValidAll = false;
 
+    logO("notValid", notValid);
+
     notValid.map((value) => {
       if (value === true) {
         notValidAll = true;
       }
     });
-    return notValidAll;
+
+    // const notValidAll = notValid.some((val) => val === false);
+
+    logO("notValidAll", notValidAll);
+
+    return !notValidAll;
   };
 
   const messageNotValid = (value) => {

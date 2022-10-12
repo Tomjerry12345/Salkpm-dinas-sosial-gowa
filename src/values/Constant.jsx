@@ -23,6 +23,7 @@ export const constantKelengkapanBerkas = [
   [
     { label: "KIS", name: "kis" },
     { label: "SKTM Desa/Kelurahan", name: "sktm_desa_kelurahan" },
+    { label: "Foto Kondisi Rumah", name: "foto_kondisi_rumah" },
   ],
 ];
 
@@ -33,6 +34,23 @@ export const constantJenisLayanan = [
   "BPNT",
   "Reaktivasi JKN",
 ];
+
+export const constantBulan = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
+
+export const constantTahun = ["2022", "2023", "2024", "2025"];
 
 export const constantPisat = ["Peserta", "Suami", "Istri", "Anak", "Tambahan"];
 
@@ -275,3 +293,40 @@ export const constantDaya = [
   "1300 watt",
   ">= 2200 watt",
 ];
+
+export const kusioner = {
+  Tabung: 2,
+  Kulkas: 4,
+  AC: 6,
+  Hp: 3,
+  Tv: 4,
+  Emas: 6,
+  Komputer: 4,
+  Laptop: 4,
+  Sepeda: 2,
+  Motor: 5,
+  Mobil: 10,
+  Perahu: 7,
+  Kapal: 7,
+  "Rumah lain": 10,
+  "Lahan lain": 9,
+  Kambing: 3,
+  Sapi: 5,
+  Kuda: 5,
+  Babi: 1,
+  Bambu: 2,
+  Kayu: 4,
+  Semen: 5,
+  Tegel: 7,
+  "Anyaman bambu": 2,
+  Papan: 4,
+  Tembok: 6,
+  "Air sungai": 2,
+  "Sumur pribadi": 4,
+  "Air isi ulang": 5,
+  "Air kemasan bermerk": 7,
+  "450 watt": 2,
+  "900 watt": 3,
+  "1300 watt": 4,
+  ">= 2200 watt": 6,
+};

@@ -6,6 +6,7 @@ import KeteranganPerumahan from "./KeteranganPerumahan";
 import DataPribadi from "./DataPribadi";
 import KepemilikanAset from "./KepemilikanAset";
 import { useNavigate } from "react-router-dom";
+import ForwardChainingNew from "../../../method/ForwardChainingNew";
 
 const steps = ["Data Pribadi", "Kepemilikan Aset", "Keterangan Perumahan"];
 
@@ -23,7 +24,8 @@ const KusionerLogic = () => {
 
   const navigate = useNavigate();
 
-  const fc = ForwardChaining();
+  // const fc = ForwardChaining();
+  const fc = ForwardChainingNew();
 
   const validator = InputValidator(null, 2);
 

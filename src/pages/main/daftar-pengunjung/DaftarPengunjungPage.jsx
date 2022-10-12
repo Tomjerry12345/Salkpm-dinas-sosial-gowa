@@ -30,9 +30,11 @@ import DaftarPengunjungLogic from "./DaftarPengunjungLogic";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import {
+  constantBulan,
   constantJenisLayanan,
   constantKelengkapanBerkas,
   constantKelurahan,
+  constantTahun,
 } from "../../../values/Constant";
 import { constantKecamatan } from "../../../values/Constant";
 import "./DaftarPengunjung.scss";
@@ -99,7 +101,7 @@ const DaftarPengunjungPage = () => {
             ))}
           </Select>
         </FormControl>
-        <FormControl sx={{ minWidth: 170 }}>
+        <FormControl sx={{ minWidth: 170, mr: 2 }}>
           <InputLabel id="filter_jenis_layanan">Jenis layanan</InputLabel>
           <Select
             name="filter_jenis_layanan"
@@ -112,6 +114,35 @@ const DaftarPengunjungPage = () => {
             ))}
           </Select>
         </FormControl>
+
+        <FormControl sx={{ minWidth: 170, mr: 2 }}>
+          <InputLabel id="filter_bulan">Bulan</InputLabel>
+          <Select
+            name="filter_bulan"
+            labelId="filter_bulan"
+            label="Bulan"
+            onChange={func.onChangeFilter}
+          >
+            {constantBulan.map((value) => (
+              <MenuItem value={value}>{value}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl sx={{ minWidth: 170 }}>
+          <InputLabel id="filter_tahun">Tahun</InputLabel>
+          <Select
+            name="filter_tahun"
+            labelId="filter_tahun"
+            label="Tahun"
+            onChange={func.onChangeFilter}
+          >
+            {constantTahun.map((value) => (
+              <MenuItem value={value}>{value}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <Stack alignItems="flex-end" style={{ width: "100vw" }}>
           <TextField
             name="filter_nik_kk"
@@ -234,7 +265,20 @@ const TambahData = ({ func, value }) => {
             error={onError(nama_pengunjung)}
             helperText={onHelperText(nama_pengunjung)}
           />
-
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DatePicker
+              label="Tanggal lahir"
+              value={tanggal_lahir}
+              onChange={onChangeDate}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={onError(tanggal_lahir)}
+                  helperText={onHelperText(tanggal_lahir)}
+                />
+              )}
+            />
+          </LocalizationProvider>
           <TextField
             name="no_kk"
             label="No.KK"
@@ -400,21 +444,6 @@ const TambahData = ({ func, value }) => {
               </FormGroup>
             </FormControl>
           </Stack>
-
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DatePicker
-              label="Tanggal lahir"
-              value={tanggal_lahir}
-              onChange={onChangeDate}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  error={onError(tanggal_lahir)}
-                  helperText={onHelperText(tanggal_lahir)}
-                />
-              )}
-            />
-          </LocalizationProvider>
         </Box>
       </DialogContent>
       <DialogActions

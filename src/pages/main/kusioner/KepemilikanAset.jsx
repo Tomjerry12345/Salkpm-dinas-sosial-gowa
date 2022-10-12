@@ -180,17 +180,6 @@ const KepemilikanAset = ({ onChange }) => {
         </RadioGroup>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <FormLabel>Kerbau</FormLabel>
-        <RadioGroup
-          row
-          name="Kerbau"
-          onChange={(e) => onChange(e, null, "radio")}
-        >
-          <FormControlLabel value="iya" control={<Radio />} label="Iya" />
-          <FormControlLabel value="tidak" control={<Radio />} label="Tidak" />
-        </RadioGroup>
-      </FormControl>
-      <FormControl sx={{ mt: 2 }}>
         <FormLabel>Sapi</FormLabel>
         <RadioGroup
           row

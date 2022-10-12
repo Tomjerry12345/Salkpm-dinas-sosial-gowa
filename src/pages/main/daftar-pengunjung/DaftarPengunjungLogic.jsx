@@ -3,7 +3,13 @@ import { useNavigate } from "react-router-dom";
 import FirebaseConfig from "../../../config/FirebaseConfig";
 import { constantKecamatan } from "../../../values/Constant";
 import InputValidator from "../../../values/InputValidator";
-import { logO, setLocalItem } from "../../../values/Utilitas";
+import {
+  getMonthNow,
+  getYearNow,
+  logO,
+  logS,
+  setLocalItem,
+} from "../../../values/Utilitas";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
 
@@ -26,8 +32,11 @@ const DaftarPengunjungLogic = () => {
       kis: false,
       sktm: false,
       domisili: false,
+      foto_kondisi_rumah: false,
     },
     tanggal_lahir: "",
+    bulan: getMonthNow(),
+    tahun: getYearNow(),
   });
 
   const [data, setData] = useState([]);
@@ -40,6 +49,8 @@ const DaftarPengunjungLogic = () => {
     filter_kecamatan: "",
     filter_jenis_layanan: "",
     filter_nik_kk: "",
+    filter_bulan: "",
+    filter_tahun: "",
   });
 
   const [notif, setNotif] = useState({
@@ -50,20 +61,27 @@ const DaftarPengunjungLogic = () => {
 
   const navigate = useNavigate();
 
-  const validator = InputValidator(input);
+  const validator = InputValidator(null, 10);
 
-  const { addData, getData, searching } = FirebaseConfig();
+  const { addData, getData, searching, multipleSearching } = FirebaseConfig();
 
   useEffect(() => {
-    const { filter_jenis_layanan, filter_nik_kk, filter_kecamatan } =
-      inputFilter;
+    const {
+      filter_jenis_layanan,
+      filter_nik_kk,
+      filter_kecamatan,
+      filter_bulan,
+      filter_tahun,
+    } = inputFilter;
 
-    if (filter_jenis_layanan !== "") {
-      getAllDataFilter("jenis_layanan", filter_jenis_layanan);
-    } else if (filter_kecamatan !== "") {
-      getAllDataFilter("kecamatan", filter_kecamatan);
+    if (filter_tahun !== "" && filter_bulan !== "") {
+      getAllDataFilter("tahun", parseInt(filter_tahun), "bulan", filter_bulan);
     } else if (filter_nik_kk !== "") {
-      getAllDataFilter("nik", filter_nik_kk);
+      getAllDataFilter("nik", filter_nik_kk, "", "");
+    } else if (filter_kecamatan !== "") {
+      getAllDataFilter("kecamatan", filter_kecamatan, "", "");
+    } else if (filter_jenis_layanan !== "") {
+      getAllDataFilter("jenis_layanan", filter_jenis_layanan, "", "");
     } else {
       getAllData();
     }
@@ -94,8 +112,22 @@ const DaftarPengunjungLogic = () => {
     setData(listData);
   };
 
-  const getAllDataFilter = async (key, value) => {
-    const snapshot = await searching("pengunjung", key, value);
+  const getAllDataFilter = async (key, value, key1, value1) => {
+    let snapshot;
+
+    if (key !== "" && value !== "" && key1 !== "" && value1 !== "") {
+      logS("multiple", `${key} => ${key1} => ${value} => ${value1}`);
+      snapshot = await multipleSearching(
+        "pengunjung",
+        key,
+        key1,
+        value,
+        value1
+      );
+    } else {
+      snapshot = await searching("pengunjung", key, value);
+    }
+
     let listData = [];
 
     snapshot.forEach((doc) => {
@@ -143,6 +175,7 @@ const DaftarPengunjungLogic = () => {
 
   const onChangeFilter = (event) => {
     const { name, value } = event.target;
+    logO("name", name);
     setInputFilter({
       ...inputFilter,
       [name]: value,
@@ -163,7 +196,11 @@ const DaftarPengunjungLogic = () => {
   const onTambah = async (e) => {
     setClick(true);
 
-    if (!validator.checkNotValidAll) {
+    const valid = validator.checkNotValidAll();
+
+    logS("validator.checkNotValidAll", valid);
+
+    if (valid) {
       setNotif({
         open: true,
         message: "Sedang di proses...",
@@ -197,7 +234,7 @@ const DaftarPengunjungLogic = () => {
   const onHelperText = (value) =>
     click ? validator.messageNotValid(value) : null;
 
-  const disableButton = () => (click ? validator.checkNotValidAll() : null);
+  const disableButton = () => (click ? !validator.checkNotValidAll() : null);
 
   const downloadExcell = async (datax, fileName) => {
     datax.forEach((val) => {
