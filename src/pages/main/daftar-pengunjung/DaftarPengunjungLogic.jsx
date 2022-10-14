@@ -74,17 +74,29 @@ const DaftarPengunjungLogic = () => {
       filter_tahun,
     } = inputFilter;
 
-    if (filter_tahun !== "" && filter_bulan !== "") {
-      getAllDataFilter("tahun", parseInt(filter_tahun), "bulan", filter_bulan);
-    } else if (filter_nik_kk !== "") {
-      getAllDataFilter("nik", filter_nik_kk, "", "");
-    } else if (filter_kecamatan !== "") {
-      getAllDataFilter("kecamatan", filter_kecamatan, "", "");
-    } else if (filter_jenis_layanan !== "") {
-      getAllDataFilter("jenis_layanan", filter_jenis_layanan, "", "");
+    if (
+      filter_tahun !== "" ||
+      filter_bulan !== "" ||
+      filter_nik_kk !== "" ||
+      filter_kecamatan !== "" ||
+      filter_jenis_layanan !== ""
+    ) {
+      getAllDataFilter(
+        "tahun",
+        filter_tahun,
+        "bulan",
+        filter_bulan,
+        "nik",
+        filter_nik_kk,
+        "kecamatan",
+        filter_kecamatan,
+        "jenis_layanan",
+        filter_jenis_layanan
+      );
     } else {
       getAllData();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputFilter]);
 
@@ -112,21 +124,46 @@ const DaftarPengunjungLogic = () => {
     setData(listData);
   };
 
-  const getAllDataFilter = async (key, value, key1, value1) => {
+  const getAllDataFilter = async (
+    key,
+    value,
+    key1,
+    value1,
+    key2,
+    value2,
+    key3,
+    value3,
+    key4,
+    value4
+  ) => {
     let snapshot;
 
-    if (key !== "" && value !== "" && key1 !== "" && value1 !== "") {
-      logS("multiple", `${key} => ${key1} => ${value} => ${value1}`);
-      snapshot = await multipleSearching(
-        "pengunjung",
-        key,
-        key1,
-        value,
-        value1
-      );
-    } else {
-      snapshot = await searching("pengunjung", key, value);
-    }
+    snapshot = await multipleSearching(
+      "pengunjung",
+      key,
+      value,
+      key1,
+      value1,
+      key2,
+      value2,
+      key3,
+      value3,
+      key4,
+      value4
+    );
+
+    // if (key !== "" && value !== "" && key1 !== "" && value1 !== "") {
+    //   logS("multiple", `${key} => ${key1} => ${value} => ${value1}`);
+    //   snapshot = await multipleSearching(
+    //     "pengunjung",
+    //     key,
+    //     key1,
+    //     value,
+    //     value1
+    //   );
+    // } else {
+    //   snapshot = await searching("pengunjung", key, value);
+    // }
 
     let listData = [];
 

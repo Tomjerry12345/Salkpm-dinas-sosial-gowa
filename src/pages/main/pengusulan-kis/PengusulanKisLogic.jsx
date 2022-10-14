@@ -68,22 +68,43 @@ const PengusulanKisLogic = () => {
 
   useEffect(() => {
     const {
-      filter_jenis_layanan,
+      // filter_jenis_layanan,
       filter_nik_kk,
       filter_kecamatan,
       filter_bulan,
       filter_tahun,
     } = inputFilter;
 
-    if (filter_kecamatan !== "") {
-      getAllDataFilter("kecamatan", filter_kecamatan, "", "");
-    } else if (filter_nik_kk !== "") {
-      getAllDataFilter("nik", filter_nik_kk, "", "");
-    } else if (filter_tahun !== "" && filter_bulan !== "") {
-      getAllDataFilter("tahun", parseInt(filter_tahun), "bulan", filter_bulan);
+    // if (filter_kecamatan !== "") {
+    //   getAllDataFilter("kecamatan", filter_kecamatan, "", "");
+    // } else if (filter_nik_kk !== "") {
+    //   getAllDataFilter("nik", filter_nik_kk, "", "");
+    // } else if (filter_tahun !== "" && filter_bulan !== "") {
+    //   getAllDataFilter("tahun", parseInt(filter_tahun), "bulan", filter_bulan);
+    // } else {
+    //   getAllData();
+    // }
+
+    if (
+      filter_tahun !== "" ||
+      filter_bulan !== "" ||
+      filter_nik_kk !== "" ||
+      filter_kecamatan !== ""
+    ) {
+      getAllDataFilter(
+        "tahun",
+        filter_tahun,
+        "bulan",
+        filter_bulan,
+        "nik",
+        filter_nik_kk,
+        "kecamatan",
+        filter_kecamatan
+      );
     } else {
       getAllData();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputFilter]);
 
@@ -98,23 +119,47 @@ const PengusulanKisLogic = () => {
     setData(listData);
   };
 
-  const getAllDataFilter = async (key, value, key1, value1) => {
+  const getAllDataFilter = async (
+    key,
+    value,
+    key1,
+    value1,
+    key2,
+    value2,
+    key3,
+    value3
+  ) => {
+    logS("test");
     let snapshot;
 
-    snapshot = await searching("pengusulan-kis", key, value);
+    snapshot = await multipleSearching(
+      "pengusulan-kis",
+      key,
+      value,
+      key1,
+      value1,
+      key2,
+      value2,
+      key3,
+      value3,
+      "",
+      ""
+    );
 
-    if (key !== "" && value !== "" && key1 !== "" && value1 !== "") {
-      logS("multiple", `${key} => ${key1} => ${value} => ${value1}`);
-      snapshot = await multipleSearching(
-        "pengusulan-kis",
-        key,
-        key1,
-        value,
-        value1
-      );
-    } else {
-      snapshot = await searching("pengusulan-kis", key, value);
-    }
+    // snapshot = await searching("pengusulan-kis", key, value);
+
+    // if (key !== "" && value !== "" && key1 !== "" && value1 !== "") {
+    //   logS("multiple", `${key} => ${key1} => ${value} => ${value1}`);
+    //   snapshot = await multipleSearching(
+    //     "pengusulan-kis",
+    //     key,
+    //     key1,
+    //     value,
+    //     value1
+    //   );
+    // } else {
+    //   snapshot = await searching("pengusulan-kis", key, value);
+    // }
 
     let listData = [];
 
