@@ -3,13 +3,7 @@ import { useNavigate } from "react-router-dom";
 import FirebaseConfig from "../../../config/FirebaseConfig";
 import { constantKecamatan } from "../../../values/Constant";
 import InputValidator from "../../../values/InputValidator";
-import {
-  getMonthNow,
-  getYearNow,
-  logO,
-  logS,
-  setLocalItem,
-} from "../../../values/Utilitas";
+import { getMonthNow, getYearNow, logO, logS, setLocalItem } from "../../../values/Utilitas";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
 
@@ -66,13 +60,7 @@ const DaftarPengunjungLogic = () => {
   const { addData, getData, searching, multipleSearching } = FirebaseConfig();
 
   useEffect(() => {
-    const {
-      filter_jenis_layanan,
-      filter_nik_kk,
-      filter_kecamatan,
-      filter_bulan,
-      filter_tahun,
-    } = inputFilter;
+    const { filter_jenis_layanan, filter_nik_kk, filter_kecamatan, filter_bulan, filter_tahun } = inputFilter;
 
     if (filter_tahun !== "" && filter_bulan !== "") {
       getAllDataFilter("tahun", parseInt(filter_tahun), "bulan", filter_bulan);
@@ -117,13 +105,7 @@ const DaftarPengunjungLogic = () => {
 
     if (key !== "" && value !== "" && key1 !== "" && value1 !== "") {
       logS("multiple", `${key} => ${key1} => ${value} => ${value1}`);
-      snapshot = await multipleSearching(
-        "pengunjung",
-        key,
-        key1,
-        value,
-        value1
-      );
+      snapshot = await multipleSearching("pengunjung", key, key1, value, value1);
     } else {
       snapshot = await searching("pengunjung", key, value);
     }
@@ -231,8 +213,7 @@ const DaftarPengunjungLogic = () => {
 
   const onError = (value) => (click ? validator.checkNotValid(value) : null);
 
-  const onHelperText = (value) =>
-    click ? validator.messageNotValid(value) : null;
+  const onHelperText = (value) => (click ? validator.messageNotValid(value) : null);
 
   const disableButton = () => (click ? !validator.checkNotValidAll() : null);
 
@@ -243,8 +224,7 @@ const DaftarPengunjungLogic = () => {
 
     logO("datax", datax);
 
-    const fileType =
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
     const ws = XLSX.utils.json_to_sheet(datax);
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };

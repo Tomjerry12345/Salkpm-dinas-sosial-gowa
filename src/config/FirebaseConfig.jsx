@@ -1,17 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  getFirestore,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCuitc5Ajzgl1k9IrIbYPrnzcRNmyReHlY",
@@ -86,7 +75,7 @@ const FirebaseConfig = () => {
 
   const multipleSearching = async (path, key1, key2, value1, value2) => {
     const col = collection(db, path);
-    const q = query(col, where(key1, "==", value1), where(key2, "==", value2));
+    const q = query(col, [where(key1, "==", value1), where(key2, "==", value2)]);
 
     const querySnapshot = await getDocs(q);
 
