@@ -5,7 +5,6 @@ import Toolbar from "@mui/material/Toolbar";
 
 import AppBarComponent from "../../component/appbar/AppBarComponent";
 import DrawerComponent from "../../component/drawer/DrawerComponent";
-import FooterComponent from "../../component/footer/FooterComponent";
 import { Outlet } from "react-router-dom";
 
 const DashboardContent = () => {

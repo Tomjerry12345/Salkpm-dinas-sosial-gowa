@@ -26,33 +26,17 @@ const KusionerPage = () => {
   const { value, func } = KusionerLogic();
 
   const { activeStep, steps } = value;
-  const {
-    isStepOptional,
-    isStepSkipped,
-    handleReset,
-    loadContent,
-    handleBack,
-    handleSkip,
-    handleNext,
-    disableButton,
-  } = func;
+  const { handleReset, loadContent, handleBack, handleNext, disableButton } =
+    func;
 
   return (
     <Box sx={{ width: "100%" }}>
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
-          const stepProps = {};
           const labelProps = {};
-          {
-            /* if (isStepOptional(index)) {
-            labelProps.optional = <Typography variant="caption">Optional</Typography>;
-          } */
-          }
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
+
           return (
-            <Step key={label} {...stepProps}>
+            <Step key={label}>
               <StepLabel {...labelProps}>{label}</StepLabel>
             </Step>
           );
@@ -81,11 +65,6 @@ const KusionerPage = () => {
               Back
             </Button>
             <Box sx={{ flex: "1 1 auto" }} />
-            {/* {isStepOptional(activeStep) && (
-              <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                Skip
-              </Button>
-            )} */}
 
             <Button onClick={handleNext} disabled={disableButton()}>
               {activeStep === steps.length - 1 ? "Finish" : "Next"}
@@ -94,10 +73,7 @@ const KusionerPage = () => {
         </div>
       )}
 
-      <Modal
-        open={value.open}
-        // onClose={handleClose}
-      >
+      <Modal open={value.open}>
         <Box sx={style}>
           <Typography>{`Nama : ${value.input.nama}`}</Typography>
           <Typography sx={{ mt: 2 }}>{`NIK : ${value.input.nik}`}</Typography>

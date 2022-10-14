@@ -60,7 +60,7 @@ const PengusulanKisLogic = () => {
 
   const validator = InputValidator(null, 14);
 
-  const { addData, getData, searching, multipleSearching } = FirebaseConfig();
+  const { addData, getData, multipleSearching } = FirebaseConfig();
 
   // useEffect(() => {
   //   getAllData();

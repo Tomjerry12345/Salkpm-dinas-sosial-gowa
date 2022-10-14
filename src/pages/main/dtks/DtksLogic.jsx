@@ -10,7 +10,6 @@ const DtksLogic = () => {
   const navigate = useNavigate();
   const inputUpload = useRef(null);
   const [data, setData] = useState([]);
-  const [dataAll, setDataAll] = useState([]);
   const [notif, setNotif] = useState({
     open: false,
     message: "",
@@ -33,6 +32,7 @@ const DtksLogic = () => {
       // test();
     }
     setLocalItem("move-page", null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // const test = async () => {
@@ -54,16 +54,8 @@ const DtksLogic = () => {
     } else {
       getAllData();
     }
-    // if (filter_jenis_layanan !== "") {
-    //   getAllDataFilter("jenis_layanan", filter_jenis_layanan);
-    // } else if (filter_kecamatan !== "") {
-    //   getAllDataFilter("kecamatan", filter_kecamatan);
-    // } else if (filter_nik_kk !== "") {
-    //   getAllDataFilter("nik", filter_nik_kk);
-    // } else {
-    // getAllData();
-    // }
-    // deleteAllData("dtks");
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputFilter]);
 
   const getAllData = async () => {
@@ -154,7 +146,7 @@ const DtksLogic = () => {
       });
     } else {
       // alert("data tidak tersedia");
-      const test = await deleteAllData("dtks");
+      await deleteAllData("dtks");
     }
 
     // const res = await addData("dtks", data1);

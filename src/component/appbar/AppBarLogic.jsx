@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { getLocalItem, setLocalItem } from "../../values/Utilitas";
+import { setLocalItem } from "../../values/Utilitas";
 
 const AppBarLogic = () => {
   const navigate = useNavigate();

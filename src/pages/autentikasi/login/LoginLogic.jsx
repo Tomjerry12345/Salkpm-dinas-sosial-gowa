@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FirebaseConfig from "../../../config/FirebaseConfig";
 import InputValidator from "../../../values/InputValidator";
@@ -44,7 +44,10 @@ const LoginLogic = () => {
       snapshot.forEach((doc) => {
         const data = doc.data();
 
-        if (input.username === data.username && input.password === data.password) {
+        if (
+          input.username === data.username &&
+          input.password === data.password
+        ) {
           localStorage.setItem("auth", "true");
           localStorage.setItem("move-page", "null");
           localStorage.setItem("index-menu", "null");
@@ -62,7 +65,8 @@ const LoginLogic = () => {
 
   const onError = (value) => (click ? validator.checkNotValid(value) : null);
 
-  const onHelperText = (value) => (click ? validator.messageNotValid(value) : null);
+  const onHelperText = (value) =>
+    click ? validator.messageNotValid(value) : null;
 
   const disableButton = () => (click ? validator.checkNotValidAll() : null);
 

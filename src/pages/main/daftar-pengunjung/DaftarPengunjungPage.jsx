@@ -1,11 +1,3 @@
-import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import { Stack } from "@mui/system";
 import {
   Box,
@@ -25,7 +17,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { colorPrimary } from "../../../values/Colors";
 import DaftarPengunjungLogic from "./DaftarPengunjungLogic";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -40,14 +31,6 @@ import { constantKecamatan } from "../../../values/Constant";
 import "./DaftarPengunjung.scss";
 import ModalNotif from "../../../component/modal/ModalNotif";
 import { DataGrid } from "@mui/x-data-grid";
-
-const renderDetailsButton = (params) => {
-  return (
-    <strong>
-      <Button variant="outlined">Detail</Button>
-    </strong>
-  );
-};
 
 const columns = [
   { field: "nik", headerName: "NIK", width: 150 },

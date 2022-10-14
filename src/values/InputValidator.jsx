@@ -6,6 +6,7 @@ const InputValidator = (input, x) => {
     // eslint-disable-next-line no-unused-vars
 
     if (input !== null) {
+      // eslint-disable-next-line no-unused-vars
       for (let _ in input) {
         i.push(true);
       }
@@ -37,7 +38,7 @@ const InputValidator = (input, x) => {
 
     logO("notValid", notValid);
 
-    notValid.map((value) => {
+    notValid.forEach((value) => {
       if (value === true) {
         notValidAll = true;
       }

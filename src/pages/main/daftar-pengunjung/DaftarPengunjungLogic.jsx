@@ -3,7 +3,13 @@ import { useNavigate } from "react-router-dom";
 import FirebaseConfig from "../../../config/FirebaseConfig";
 import { constantKecamatan } from "../../../values/Constant";
 import InputValidator from "../../../values/InputValidator";
-import { getMonthNow, getYearNow, logO, logS, setLocalItem } from "../../../values/Utilitas";
+import {
+  getMonthNow,
+  getYearNow,
+  logO,
+  logS,
+  setLocalItem,
+} from "../../../values/Utilitas";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
 
@@ -57,13 +63,36 @@ const DaftarPengunjungLogic = () => {
 
   const validator = InputValidator(null, 10);
 
-  const { addData, getData, searching, multipleSearching } = FirebaseConfig();
+  const { addData, getData, multipleSearching } = FirebaseConfig();
 
   useEffect(() => {
-    const { filter_jenis_layanan, filter_nik_kk, filter_kecamatan, filter_bulan, filter_tahun } = inputFilter;
+    const {
+      filter_jenis_layanan,
+      filter_nik_kk,
+      filter_kecamatan,
+      filter_bulan,
+      filter_tahun,
+    } = inputFilter;
 
-    if (filter_tahun !== "" || filter_bulan !== "" || filter_nik_kk !== "" || filter_kecamatan !== "" || filter_jenis_layanan !== "") {
-      getAllDataFilter("tahun", filter_tahun, "bulan", filter_bulan, "nik", filter_nik_kk, "kecamatan", filter_kecamatan, "jenis_layanan", filter_jenis_layanan);
+    if (
+      filter_tahun !== "" ||
+      filter_bulan !== "" ||
+      filter_nik_kk !== "" ||
+      filter_kecamatan !== "" ||
+      filter_jenis_layanan !== ""
+    ) {
+      getAllDataFilter(
+        "tahun",
+        filter_tahun,
+        "bulan",
+        filter_bulan,
+        "nik",
+        filter_nik_kk,
+        "kecamatan",
+        filter_kecamatan,
+        "jenis_layanan",
+        filter_jenis_layanan
+      );
     } else {
       getAllData();
     }
@@ -95,23 +124,31 @@ const DaftarPengunjungLogic = () => {
     setData(listData);
   };
 
-  const getAllDataFilter = async (key, value, key1, value1, key2, value2, key3, value3, key4, value4) => {
-    let snapshot;
-
-    snapshot = await multipleSearching("pengunjung", key, value, key1, value1, key2, value2, key3, value3, key4, value4);
-
-    // if (key !== "" && value !== "" && key1 !== "" && value1 !== "") {
-    //   logS("multiple", `${key} => ${key1} => ${value} => ${value1}`);
-    //   snapshot = await multipleSearching(
-    //     "pengunjung",
-    //     key,
-    //     key1,
-    //     value,
-    //     value1
-    //   );
-    // } else {
-    //   snapshot = await searching("pengunjung", key, value);
-    // }
+  const getAllDataFilter = async (
+    key,
+    value,
+    key1,
+    value1,
+    key2,
+    value2,
+    key3,
+    value3,
+    key4,
+    value4
+  ) => {
+    const snapshot = await multipleSearching(
+      "pengunjung",
+      key,
+      value,
+      key1,
+      value1,
+      key2,
+      value2,
+      key3,
+      value3,
+      key4,
+      value4
+    );
 
     let listData = [];
 
@@ -216,7 +253,8 @@ const DaftarPengunjungLogic = () => {
 
   const onError = (value) => (click ? validator.checkNotValid(value) : null);
 
-  const onHelperText = (value) => (click ? validator.messageNotValid(value) : null);
+  const onHelperText = (value) =>
+    click ? validator.messageNotValid(value) : null;
 
   const disableButton = () => (click ? !validator.checkNotValidAll() : null);
 
@@ -227,7 +265,8 @@ const DaftarPengunjungLogic = () => {
 
     logO("datax", datax);
 
-    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
     const ws = XLSX.utils.json_to_sheet(datax);
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };

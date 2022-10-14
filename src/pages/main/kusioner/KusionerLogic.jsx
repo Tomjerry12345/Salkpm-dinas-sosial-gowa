@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
-import ForwardChaining from "../../../method/ForwardChaining";
+import { useState } from "react";
 import InputValidator from "../../../values/InputValidator";
-import { log, logO, logS } from "../../../values/Utilitas";
+import { logO } from "../../../values/Utilitas";
 import KeteranganPerumahan from "./KeteranganPerumahan";
 import DataPribadi from "./DataPribadi";
 import KepemilikanAset from "./KepemilikanAset";
@@ -28,12 +27,6 @@ const KusionerLogic = () => {
   const fc = ForwardChainingNew();
 
   const validator = InputValidator(null, 2);
-
-  useEffect(() => {
-    // logO("input", input);
-    // const result = fc.clasify();
-    // logO("result", result);
-  }, []);
 
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());

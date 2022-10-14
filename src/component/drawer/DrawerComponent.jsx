@@ -2,9 +2,7 @@ import MuiDrawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 import { mainListItems } from "./ListItems";
 import DrawerLogic from "./DrawerLogic";
@@ -48,11 +46,7 @@ const DrawerComponent = ({ open, toggleDrawer }) => {
           justifyContent: "flex-end",
           px: [1],
         }}
-      >
-        {/* <IconButton onClick={toggleDrawer}>
-          <ChevronLeftIcon />
-        </IconButton> */}
-      </Toolbar>
+      ></Toolbar>
       <Divider />
       <List component="nav">{mainListItems(onClick, isSelectedPage)}</List>
       <Divider />
