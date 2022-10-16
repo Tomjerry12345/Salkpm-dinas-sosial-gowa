@@ -1,6 +1,17 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { logS } from "../values/Utilitas";
 
 const firebaseConfig = {
@@ -74,41 +85,44 @@ const FirebaseConfig = () => {
     return querySnapshot;
   };
 
-  const multipleSearching = async (path, key, value, key1, value1, key2, value2, key3, value3, key4, value4) => {
+  const multipleSearching = async (
+    path,
+    key,
+    value,
+    key1,
+    value1,
+    key2,
+    value2,
+    key3,
+    value3,
+    key4,
+    value4
+  ) => {
     const col = collection(db, path);
 
     const listWhere = [];
 
-    console.log(`value => ${value}`);
-
     if (value !== "") {
-      alert(`value ${value}`);
       listWhere.push(where(key, "==", parseInt(value)));
     }
 
     if (value1 !== "") {
-      alert(`valu1 ${value1}`);
       listWhere.push(where(key1, "==", value1));
     }
 
     if (value2 !== "") {
-      alert(`value2 ${value2}`);
       listWhere.push(where(key2, "==", value2));
     }
 
     if (value3 !== "") {
-      alert(`value3 ${value3}`);
       listWhere.push(where(key3, "==", value3));
     }
 
     if (value4 !== "") {
-      alert(`value4 ${value4}`);
       listWhere.push(where(key4, "==", value4));
     }
 
     const sum = listWhere.length;
-
-    logS("sum", sum);
 
     let q;
 
