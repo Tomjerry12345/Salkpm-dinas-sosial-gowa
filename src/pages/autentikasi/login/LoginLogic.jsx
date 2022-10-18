@@ -34,7 +34,7 @@ const LoginLogic = () => {
 
   const onLogin = async () => {
     setClick(true);
-    if (!validator.checkNotValidAll()) {
+    if (validator.checkNotValidAll()) {
       setNotif({
         open: true,
         message: "Silahkan tunggu ...",
@@ -68,7 +68,7 @@ const LoginLogic = () => {
   const onHelperText = (value) =>
     click ? validator.messageNotValid(value) : null;
 
-  const disableButton = () => (click ? validator.checkNotValidAll() : null);
+  const disableButton = () => (click ? !validator.checkNotValidAll() : null);
 
   return {
     func: {

@@ -66,7 +66,10 @@ const KusionerPage = () => {
             </Button>
             <Box sx={{ flex: "1 1 auto" }} />
 
-            <Button onClick={handleNext} disabled={disableButton()}>
+            {/* <Button onClick={handleNext} disabled={disableButton()}>
+              {activeStep === steps.length - 1 ? "Finish" : "Next"}
+            </Button> */}
+            <Button onClick={handleNext}>
               {activeStep === steps.length - 1 ? "Finish" : "Next"}
             </Button>
           </Box>

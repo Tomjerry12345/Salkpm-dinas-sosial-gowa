@@ -68,6 +68,7 @@ const ResultP2 = () => {
 
   const ruleY3 = () => {
     let isRuleJ3 = !rRuleJ3.some((x) => x === false);
+    logS("isRuleJ3", isRuleJ3);
     if (ruleW3() && isRuleJ3) {
       return true;
     }
@@ -85,6 +86,7 @@ const ResultP2 = () => {
     let isRuleL3 = !rRuleL3.some((x) => x === false);
 
     logS("isRuleL3", isRuleL3);
+    logS("ruleY3()", ruleY3());
 
     if (ruleY3() || isRuleL3) {
       return true;

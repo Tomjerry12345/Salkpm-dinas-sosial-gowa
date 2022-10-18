@@ -53,9 +53,9 @@ const ResultP1 = () => {
     ruleJ2(val);
     ruleL2(val);
 
-    let isRuleL1 = !rRuleL2.some((x) => x === false);
+    let isRuleL2 = !rRuleL2.some((x) => x === false);
 
-    if (ruleW2() || isRuleL1) {
+    if (ruleW2() || isRuleL2) {
       return true;
     }
 
