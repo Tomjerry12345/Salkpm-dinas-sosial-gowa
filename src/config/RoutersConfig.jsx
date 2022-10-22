@@ -4,7 +4,7 @@ import LoginPage from "../pages/autentikasi/login/LoginPage";
 import RegisterPage from "../pages/autentikasi/register/RegisterPage";
 import DaftarPengunjungPage from "../pages/main/daftar-pengunjung/DaftarPengunjungPage";
 import DtksPage from "../pages/main/dtks/DtksPage";
-import KusionerPage from "../pages/main/kusioner/KusionerPage";
+// import KusionerPage from "../pages/main/kusioner/KusionerPage";
 import MainPage from "../pages/main/MainPage";
 import PengusulanKisPage from "../pages/main/pengusulan-kis/PengusulanKisPage";
 
@@ -19,7 +19,7 @@ const RoutersConfig = () => {
           <Route index element={<DtksPage />} />
           <Route path="daftar-pengunjung" element={<DaftarPengunjungPage />} />
           <Route path="pengusulan-kis" element={<PengusulanKisPage />} />
-          <Route path="kusioner" element={<KusionerPage />} />
+          {/* <Route path="kusioner" element={<KusionerPage />} /> */}
         </Route>
       </Routes>
     </BrowserRouter>

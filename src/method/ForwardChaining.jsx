@@ -2,7 +2,6 @@ import { logO, logS } from "../values/Utilitas";
 import ResultP0 from "./ResultP0";
 import ResultP1 from "./ResultP1";
 import ResultP2 from "./ResultP2";
-import ResultP3 from "./ResultP3";
 
 const testing = [
   "Tabung",
@@ -35,7 +34,6 @@ const ForwardChaining = () => {
     const p0 = ResultP0();
     const p1 = ResultP1();
     const p2 = ResultP2();
-    const p3 = ResultP3();
     data.forEach((val) => {
       if (p0.result(val)) {
         result = "P0";
@@ -43,10 +41,8 @@ const ForwardChaining = () => {
         result = "P1";
       } else if (p2.result(val)) {
         result = "P2";
-      } else if (p3.result(val)) {
-        result = "P3";
       } else {
-        result = "false";
+        result = "P3";
       }
     });
     // logS("result", result);

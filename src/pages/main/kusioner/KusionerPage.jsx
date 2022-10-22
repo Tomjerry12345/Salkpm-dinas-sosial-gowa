@@ -1,105 +1,201 @@
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { useEffect, useState } from "react";
+import { logO, logS } from "../../../values/Utilitas";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
+import "./KusionerPage.scss";
 
-import "./KusionerStyle.scss";
-import KusionerLogic from "./KusionerLogic";
-import { Modal } from "@mui/material";
-import { Stack } from "@mui/system";
+export default function KusionerPage({ open, handleClose }) {
+  //   const [open, setOpen] = useState(openDialog);
+  const [i, setI] = useState(0);
+  const [pertanyaan, setPertanyaan] = useState();
+  const [pilihan, setPiliihan] = useState("");
+  const [jenisLantai, setJenisLantai] = useState("");
+  const [showData, setShowData] = useState({
+    nama: "",
+    nik: "",
+    pilihan: [],
+  });
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 480,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+  const [endClasify, setEndClasify] = useState(false);
 
-const KusionerPage = () => {
-  const { value, func } = KusionerLogic();
+  const [hasil, setHasil] = useState("");
 
-  const { activeStep, steps } = value;
-  const { handleReset, loadContent, handleBack, handleNext, disableButton } =
-    func;
+  useEffect(() => {
+    forwardChaining();
+    logO("showData", showData);
+  }, [i, showData]);
+
+  const forwardChaining = () => {
+    if (i === 0) {
+      setPertanyaan(
+        <TextField
+          value={showData.nama}
+          autoFocus
+          margin="dense"
+          label="Input nama"
+          fullWidth
+          variant="standard"
+          onChange={(e) => {
+            setShowData({
+              ...showData,
+              nama: e.target.value,
+            });
+          }}
+        />
+      );
+    } else if (i === 1) {
+      setPertanyaan(
+        <TextField
+          value={showData.nik}
+          autoFocus
+          margin="dense"
+          label="Input nik"
+          fullWidth
+          variant="standard"
+          onChange={(e) => {
+            setShowData({
+              ...showData,
+              nik: e.target.value,
+            });
+          }}
+        />
+      );
+    } else if (i === 2) {
+      setPertanyaan(
+        <FormControl
+          fullWidth
+          style={{
+            width: 200,
+            marginTop: 24,
+          }}
+        >
+          <InputLabel>Pilih jenis lantai</InputLabel>
+          <Select
+            // value={age}
+            label="Pilih jenis lantai"
+            onChange={handleChange}
+          >
+            <MenuItem value={"Tegel"}>Tegel</MenuItem>
+            <MenuItem value={"Semen"}>Semen</MenuItem>
+            <MenuItem value={"Kayu"}>Kayu</MenuItem>
+            <MenuItem value={"Bambu"}>Bambu</MenuItem>
+          </Select>
+        </FormControl>
+      );
+    } else if (i === 3) {
+      setPertanyaan(<Typography>Apakah anda memiliki kulkas?</Typography>);
+      //   if (jenisLantai === "Bambu") {
+      //     onEndClasify("P0");
+      //   } else {
+      //     setPertanyaan(<Typography>Apakah anda memiliki kulkas?</Typography>);
+      //   }
+    } else if (i === 4) {
+      if (pilihan === "iya") {
+        setPertanyaan(<Typography>Apakah anda memiliki motor?</Typography>);
+      } else {
+        if (jenisLantai === "Tegel") {
+          onEndClasify("P1");
+        } else {
+          onEndClasify("P0");
+        }
+      }
+    } else if (i === 5) {
+      if (pilihan === "iya") {
+        setPertanyaan(<Typography>Apakah anda memiliki mobil?</Typography>);
+      } else {
+        if (jenisLantai === "Bambu") {
+          onEndClasify("P0");
+        } else {
+          onEndClasify("P1");
+        }
+      }
+    } else if (i === 6) {
+      if (pilihan === "iya") {
+        if (jenisLantai === "Bambu") {
+          onEndClasify("P2");
+        } else {
+          onEndClasify("P3");
+        }
+      } else {
+        if (jenisLantai === "Bambu") {
+          onEndClasify("P1");
+        } else {
+          onEndClasify("P2");
+        }
+      }
+    }
+  };
+
+  const onEndClasify = (c) => {
+    setEndClasify(true);
+    setHasil(c);
+  };
+
+  const handleChange = (e) => {
+    setJenisLantai(e.target.value);
+    setShowData({
+      ...showData,
+      pilihan: [e.target.value],
+    });
+  };
+
+  const onTidak = () => {
+    setI((prev) => prev + 1);
+    setPiliihan("tidak");
+  };
+
+  const onIya = () => {
+    setI((prev) => prev + 1);
+    setPiliihan("iya");
+  };
+
+  const onCancel = () => {
+    setI(0);
+    setEndClasify(false);
+    handleClose();
+  };
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => {
-          const labelProps = {};
-
-          return (
-            <Step key={label}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
-      {activeStep === steps.length ? (
-        <div className="content">
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            All steps completed - you&apos;re finished
-          </Typography>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Box sx={{ flex: "1 1 auto" }} />
-            <Button onClick={handleReset}>Reset</Button>
-          </Box>
-        </div>
-      ) : (
-        <div className="content">
-          {loadContent(activeStep)}
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2, mt: 4 }}>
-            <Button
-              color="inherit"
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Back
-            </Button>
-            <Box sx={{ flex: "1 1 auto" }} />
-
-            {/* <Button onClick={handleNext} disabled={disableButton()}>
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
-            </Button> */}
-            <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
-            </Button>
-          </Box>
-        </div>
-      )}
-
-      <Modal open={value.open}>
-        <Box sx={style}>
-          <Typography>{`Nama : ${value.input.nama}`}</Typography>
-          <Typography sx={{ mt: 2 }}>{`NIK : ${value.input.nik}`}</Typography>
-          <Typography
-            sx={{ mt: 2 }}
-          >{`Kusioner : ${value.input.kusioner.toString()}`}</Typography>
-          <Typography
-            sx={{ mt: 2 }}
-          >{`Clasify : ${value.input.clasify}`}</Typography>
-
-          <Stack
-            sx={{
-              mt: 4,
-            }}
-          >
-            <Button variant="outlined" onClick={func.onBackHome}>
-              Kembali ke home
-            </Button>
-          </Stack>
-        </Box>
-      </Modal>
-    </Box>
+    <div>
+      <Dialog open={open} onClose={handleClose} className="custom-dialog">
+        {endClasify ? (
+          <>
+            <DialogTitle>Hasil</DialogTitle>
+            <DialogContent>
+              <Typography variant="h6">Nama: {showData.nama}</Typography>
+              <Typography variant="h6">NIK: {showData.nik}</Typography>
+              {/* <Typography variant="h6">Pilihan: {showData.pilihan}</Typography> */}
+              <Typography variant="h6">Hasil: {hasil}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={onCancel}>Kembali</Button>
+            </DialogActions>
+          </>
+        ) : (
+          <>
+            <DialogTitle>Kusioner</DialogTitle>
+            <DialogContent>{pertanyaan}</DialogContent>
+            <DialogActions>
+              <Button onClick={i > 2 ? onTidak : onCancel}>
+                {i > 2 ? "Tidak" : "Cancel"}
+              </Button>
+              <Button onClick={onIya}>{i > 1 ? "Iya" : "Lanjut"}</Button>
+            </DialogActions>
+          </>
+        )}
+      </Dialog>
+    </div>
   );
-};
-
-export default KusionerPage;
+}

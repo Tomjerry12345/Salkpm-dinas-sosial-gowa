@@ -9,6 +9,7 @@ import "./AppBarComponent.scss";
 import { Stack } from "@mui/system";
 import AppBarLogic from "./AppBarLogic";
 import { Button } from "@mui/material";
+import KusionerPage from "../../pages/main/kusioner/KusionerPage";
 
 const drawerWidth = 240;
 
@@ -35,7 +36,13 @@ const styleSubMenu = {
 };
 
 const AppBarComponent = ({ open, toggleDrawer }) => {
+  const [clickKusioner, setClickKusioner] = React.useState(false);
   const { onClickNav } = AppBarLogic();
+
+  const handleClose = () => {
+    setClickKusioner(false);
+  };
+
   return (
     <AppBar position="absolute" open={open} color="primary">
       <Toolbar
@@ -62,7 +69,7 @@ const AppBarComponent = ({ open, toggleDrawer }) => {
           <Button
             variant="text"
             style={styleSubMenu}
-            onClick={() => onClickNav("kusioner")}
+            onClick={() => setClickKusioner(true)}
           >
             Kusioner
           </Button>
@@ -75,6 +82,10 @@ const AppBarComponent = ({ open, toggleDrawer }) => {
           </Button>
         </Stack>
       </Toolbar>
+
+      {/* Modal kusioner */}
+
+      <KusionerPage open={clickKusioner} handleClose={handleClose} />
     </AppBar>
   );
 };
