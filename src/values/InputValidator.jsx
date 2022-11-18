@@ -19,24 +19,44 @@ const InputValidator = (input, x) => {
     return i;
   });
 
-  const checkNotValid = (value) => {
+  const checkNotValid = (value, key) => {
     if (checkEmpty(value)) {
+      return true;
+    } else if (key === "no_kk" && checkLength(value, 16)) {
+      return true;
+    } else if (key === "nik" && checkLength(value, 16)) {
       return true;
     } else {
       return false;
     }
   };
 
-  const updateValid = (value, index) => {
+  const updateValid = (value, index, key) => {
+    // alert(index);
     const current = [...notValid];
-    current[index] = checkNotValid(value);
+    current[index] = checkNotValid(value, key);
+    console.log("current", current);
     setNotValid(current);
+  };
+
+  const setTofalseValue = (val) => {
+    let x = 0;
+    setNotValid(() => {
+      let i = [];
+      for (const key of Object.keys(val)) {
+        if (key !== "id" && key !== "bulan" && key !== "tahun") {
+          console.log(key, val[key]);
+          i.push(checkNotValid(val[key], key));
+        }
+      }
+      return i;
+    });
   };
 
   const checkNotValidAll = () => {
     let notValidAll = false;
 
-    logO("notValid", notValid);
+    console.log("notValid", notValid);
 
     notValid.forEach((value) => {
       if (value === true) {
@@ -46,20 +66,26 @@ const InputValidator = (input, x) => {
 
     // const notValidAll = notValid.some((val) => val === false);
 
-    logO("notValidAll", notValidAll);
-
     return !notValidAll;
   };
 
-  const messageNotValid = (value) => {
+  const messageNotValid = (value, key) => {
     if (checkEmpty(value)) {
       return "Form tidak boleh kosong";
+    } else if (key === "no_kk" || key === "nik") {
+      if (checkLength(value, 16)) {
+        return "Form tidak boleh kurang atau lebih dari 16";
+      }
     }
     return "";
   };
 
   const checkEmpty = (value) => {
-    return value === "" ? true : false;
+    return value === "" || value === undefined ? true : false;
+  };
+
+  const checkLength = (value, max) => {
+    return value.length < max ? true : false;
   };
 
   return {
@@ -67,6 +93,7 @@ const InputValidator = (input, x) => {
     checkNotValidAll,
     updateValid,
     messageNotValid,
+    setTofalseValue,
   };
 };
 

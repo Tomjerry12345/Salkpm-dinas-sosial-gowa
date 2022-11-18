@@ -31,40 +31,106 @@ import { constantKecamatan } from "../../../values/Constant";
 import "./DaftarPengunjung.scss";
 import ModalNotif from "../../../component/modal/ModalNotif";
 import { DataGrid } from "@mui/x-data-grid";
-
-const columns = [
-  { field: "nik", headerName: "NIK", width: 150 },
-  { field: "no_kk", headerName: "NoKK", width: 150 },
-  { field: "nama_pengunjung", headerName: "Nama Pengunjung", width: 150 },
-  { field: "kecamatan", headerName: "Kecamatan", width: 120 },
-  { field: "kelurahan", headerName: "Kelurahan", width: 120 },
-  { field: "jenis_layanan", headerName: "Jenis Layanan", width: 150 },
-  { field: "no_telpon", headerName: "No telepon", width: 150 },
-  { field: "nama_petugas", headerName: "Nama Petugas", width: 150 },
-  { field: "tanggal_lahir", headerName: "Tanggal Lahir", width: 150 },
-  { field: "alamat", headerName: "Alamat", width: 150 },
-
-  // {
-  //   field: "action",
-  //   headerName: "Action",
-  //   width: 120,
-  //   renderCell: renderDetailsButton,
-  //   disableClickEventBubbling: true,
-  // },
-  // {
-  //   field: "fullName",
-  //   headerName: "Full name",
-  //   description: "This column has a value getter and is not sortable.",
-  //   sortable: false,
-  //   width: 160,
-  //   valueGetter: (params) =>
-  //     `${params.row.firstName || ""} ${params.row.lastName || ""}`,
-  // },
-];
+import DialogConfirm from "../../../component/modal/DialogConfirm";
 
 const DaftarPengunjungPage = () => {
   const { func, value } = DaftarPengunjungLogic();
   const { open, variant, message } = value.notif;
+
+  const columns = [
+    { field: "nik", headerName: "NIK", width: 150 },
+    { field: "no_kk", headerName: "NoKK", width: 150 },
+    { field: "nama", headerName: "Nama Pengunjung", width: 180 },
+    { field: "kecamatan", headerName: "Kecamatan", width: 200 },
+    { field: "kelurahan", headerName: "Kelurahan", width: 200 },
+    { field: "jenis_layanan", headerName: "Jenis Layanan", width: 150 },
+    { field: "no_telpon", headerName: "No telepon", width: 150 },
+    { field: "nama_petugas", headerName: "Nama Petugas", width: 150 },
+    { field: "tanggal_lahir", headerName: "Tanggal Lahir", width: 150 },
+    { field: "alamat", headerName: "Alamat", width: 150 },
+    {
+      field: "action",
+      headerName: "Action",
+      align: "center",
+      headerAlign: "center",
+      editable: false,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: false,
+      width: 200,
+      renderCell: (params) => {
+        const id = params.row.id;
+        const row = params.row;
+
+        const newKel = {
+          kartu_keluarga: false,
+          ktp: false,
+          kks: false,
+          kis: false,
+          sktm_desa_kelurahan: false,
+          domisili: false,
+          foto_kondisi_rumah: false,
+        };
+
+        const split = row.kelengkapan_berkas.split(",");
+
+        split.forEach((val) => {
+          newKel[val] = true;
+        });
+
+        const data = {
+          nama_petugas: row.nama_petugas,
+          nama: row.nama,
+          no_kk: row.no_kk,
+          nik: row.nik,
+          kelurahan: row.kelurahan,
+          kecamatan: row.kecamatan,
+          alamat: row.alamat,
+          no_telpon: row.no_telpon,
+          jenis_layanan: row.jenis_layanan,
+          kelengkapan_berkas: newKel,
+          tanggal_lahir: row.tanggal_lahir,
+          id: row.id,
+          bulan: row.bulan,
+          tahun: row.tahun,
+        };
+        return (
+          <Stack direction="row" spacing={2}>
+            <Button
+              color="success"
+              variant="outlined"
+              onClick={(e) => func.onUbah(e, data)}
+            >
+              Ubah
+            </Button>
+            <Button
+              color="error"
+              variant="outlined"
+              onClick={(e) => func.onHapus(e, id)}
+            >
+              Hapus
+            </Button>
+          </Stack>
+        );
+      },
+    },
+    // {
+    //   field: "action",
+    //   headerName: "Action",
+    //   width: 120,
+    //   renderCell: renderDetailsButton,
+    //   disableClickEventBubbling: true,
+    // },
+    // {
+    //   field: "fullName",
+    //   headerName: "Full name",
+    //   description: "This column has a value getter and is not sortable.",
+    //   sortable: false,
+    //   width: 160,
+    //   valueGetter: (params) =>
+    //     `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+    // },
+  ];
 
   return (
     <>
@@ -97,7 +163,6 @@ const DaftarPengunjungPage = () => {
             ))}
           </Select>
         </FormControl>
-
         <FormControl sx={{ minWidth: 170, mr: 2 }}>
           <InputLabel id="filter_bulan">Bulan</InputLabel>
           <Select
@@ -111,7 +176,6 @@ const DaftarPengunjungPage = () => {
             ))}
           </Select>
         </FormControl>
-
         <FormControl sx={{ minWidth: 170 }}>
           <InputLabel id="filter_tahun">Tahun</InputLabel>
           <Select
@@ -125,18 +189,24 @@ const DaftarPengunjungPage = () => {
             ))}
           </Select>
         </FormControl>
-
         <Stack alignItems="flex-end" style={{ width: "100vw" }}>
           <TextField
             name="filter_nik_kk"
             variant="outlined"
             label="Input NIK"
+            // value={value.filterNik}
             onChange={func.onChangeFilter}
+            // error={value.isError}
+            // helperText={
+            //   value.isError
+            //     ? "Inputan tidak boleh kurang dari 16 karakter"
+            //     : null
+            // }
           />
         </Stack>
       </Stack>
 
-      <ShowData value={value} />
+      <ShowData value={value} columns={columns} />
 
       <TambahData func={func} value={value} />
 
@@ -165,11 +235,18 @@ const DaftarPengunjungPage = () => {
         message={message}
         onSucces={func.resSucces}
       />
+
+      <DialogConfirm
+        open={value.confirm.open}
+        message={value.confirm.message}
+        onSucces={func.onSuccesConfirm}
+        onClose={func.onCloseConfirm}
+      />
     </>
   );
 };
 
-const ShowData = ({ value }) => (
+const ShowData = ({ value, columns }) => (
   <div style={{ height: 400, width: "100%" }}>
     <DataGrid
       rows={value.data}
@@ -191,10 +268,11 @@ const TambahData = ({ func, value }) => {
     onTambah,
     handleClose,
     onChangeDate,
+    onUbahDb,
   } = func;
   const {
     nama_petugas,
-    nama_pengunjung,
+    nama,
     no_kk,
     nik,
     kelurahan,
@@ -238,15 +316,15 @@ const TambahData = ({ func, value }) => {
           />
 
           <TextField
-            name="nama_pengunjung"
+            name="nama"
             label="Nama pengunjung"
             type="text"
             variant="outlined"
             onChange={(e) => onChange(e, 1, "input")}
             required
-            value={nama_pengunjung}
-            error={onError(nama_pengunjung)}
-            helperText={onHelperText(nama_pengunjung)}
+            value={nama}
+            error={onError(nama)}
+            helperText={onHelperText(nama)}
           />
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DatePicker
@@ -270,8 +348,8 @@ const TambahData = ({ func, value }) => {
             onChange={(e) => onChange(e, 2, "input")}
             required
             value={no_kk}
-            error={onError(no_kk)}
-            helperText={onHelperText(no_kk)}
+            error={onError(no_kk, "no_kk")}
+            helperText={onHelperText(no_kk, "no_kk")}
           />
 
           <TextField
@@ -282,8 +360,8 @@ const TambahData = ({ func, value }) => {
             onChange={(e) => onChange(e, 3, "input")}
             required
             value={nik}
-            error={onError(nik)}
-            helperText={onHelperText(nik)}
+            error={onError(nik, "nik")}
+            helperText={onHelperText(nik, "nik")}
           />
           <Stack className="custom-stack-kecamatan-kelurahan">
             <FormControl sx={{ ml: 1, minWidth: 200 }}>
@@ -395,35 +473,49 @@ const TambahData = ({ func, value }) => {
           >
             <FormControl component="fieldset" variant="standard">
               <FormGroup>
-                {constantKelengkapanBerkas[0].map((value) => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={kelengkapan_berkas[value.name]}
-                        onChange={(e) => onChange(e, 9, "checkbox")}
-                        name={value.name}
-                      />
-                    }
-                    label={value.label}
-                  />
-                ))}
+                {constantKelengkapanBerkas[0].map((value) => {
+                  // let newKel;
+                  // if (input.id !== undefined) {
+                  //   const split = kelengkapan_berkas.split(",");
+                  //   split.forEach((val) => {
+                  //     if (value.name === val) {
+                  //       newKel = true;
+                  //     }
+                  //   });
+                  // }
+
+                  return (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={kelengkapan_berkas[value.name]}
+                          onChange={(e) => onChange(e, 9, "checkbox")}
+                          name={value.name}
+                        />
+                      }
+                      label={value.label}
+                    />
+                  );
+                })}
               </FormGroup>
             </FormControl>
 
             <FormControl component="fieldset" variant="standard">
               <FormGroup>
-                {constantKelengkapanBerkas[1].map((value) => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={kelengkapan_berkas[value.name]}
-                        onChange={(e) => onChange(e, 9, "checkbox")}
-                        name={value.name}
-                      />
-                    }
-                    label={value.label}
-                  />
-                ))}
+                {constantKelengkapanBerkas[1].map((value) => {
+                  return (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={kelengkapan_berkas[value.name]}
+                          onChange={(e) => onChange(e, 9, "checkbox")}
+                          name={value.name}
+                        />
+                      }
+                      label={value.label}
+                    />
+                  );
+                })}
               </FormGroup>
             </FormControl>
           </Stack>
@@ -444,10 +536,10 @@ const TambahData = ({ func, value }) => {
         <Button
           className="succes-btn"
           variant="contained"
-          onClick={onTambah}
+          onClick={input.id === undefined ? onTambah : onUbahDb}
           disabled={disableButton()}
         >
-          Tambah
+          {input.id === undefined ? "Tambah" : "Edit"}
         </Button>
       </DialogActions>
     </Dialog>

@@ -77,6 +77,16 @@ const FirebaseConfig = () => {
     }
   };
 
+  const updateDataDoc = async (path, child, value) => {
+    const ref = doc(db, path, child);
+    try {
+      await updateDoc(ref, value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
   const searching = async (path, key, value) => {
     const col = collection(db, path);
     const q = query(col, where(key, "==", value));
@@ -153,18 +163,10 @@ const FirebaseConfig = () => {
         }
       }, 1000);
     });
+  };
 
-    // const test = await promise;
-    // logged(`test 1 => ${test}`);
-
-    // if (allData.empty) {
-    //   logged(`kosong`);
-    // } else {
-    //   logged(`terisi`);
-    // }
-    // allData.docs.forEach(async (obj) =>
-    //   logged(`id => ${JSON.stringify(obj.id)}`)
-    // );
+  const deleteSpecifict = async (path, id) => {
+    await deleteDoc(doc(db, path, id));
   };
 
   return {
@@ -174,6 +176,8 @@ const FirebaseConfig = () => {
     searching,
     multipleSearching,
     deleteAllData,
+    deleteSpecifict,
+    updateDataDoc,
   };
 };
 

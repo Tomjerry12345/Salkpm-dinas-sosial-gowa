@@ -50,6 +50,10 @@ const DtksPage = () => {
           label="Input NIK / No. KK"
           onChange={func.onChangeFilter}
           onKeyDown={func.onSearch}
+          type="number"
+          value={value.filterNikKK}
+          error={value.isError}
+          helperText={value.isError ? "Inputan tidak boleh kurang dari 16 karakter" : null}
         />
       </Stack>
       <div style={{ height: 400, width: "100%" }}>

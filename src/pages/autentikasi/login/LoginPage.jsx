@@ -1,4 +1,6 @@
-import { Button, Grid, TextField, Typography } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import React from "react";
+import { Button, FormControl, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import ModalNotif from "../../../component/modal/ModalNotif";
 import { colorPrimary } from "../../../values/Colors";
@@ -55,10 +57,53 @@ const LoginPage = () => {
                   onChange={(e) => onChange(e, 1)}
                   error={onError(password)}
                   helperText={onHelperText(password)}
+                  type={value.visiblePassword ? "password" : "text"}
                   fullWidth
                   required
                   label="password"
-                />
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={func.onSetVisible}
+                      edge="end"
+                    >
+                      {value.visiblePassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>,
+                  }}
+                 
+                >
+                  
+              </TextField>
+                {/* <FormControl variant="outlined">
+                  <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-password"
+                    name="password"
+                    type={values.showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={handleChange('password')}
+                    // onChange={(e) => onChange(e, 1)}
+                    helperText={onHelperText(password)}
+                    error={onError(password)}
+                    required
+                    fullWidth
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password"
+                  />
+                </FormControl> */}
                 <Button
                   variant="contained"
                   color="primary"

@@ -10,6 +10,7 @@ const DtksLogic = () => {
   const navigate = useNavigate();
   const inputUpload = useRef(null);
   const [data, setData] = useState([]);
+  const [isError, setIsError] = useState(false);
   const [notif, setNotif] = useState({
     open: false,
     message: "",
@@ -23,15 +24,16 @@ const DtksLogic = () => {
   const { addData, getData, deleteAllData, searching } = FirebaseConfig();
 
   useEffect(() => {
-    const movePage = getLocalItem("move-page");
+    // const movePage = getLocalItem("move-page");
 
-    if (movePage !== "null") {
-      navigate(movePage);
-    } else {
-      getAllData();
-      // test();
-    }
-    setLocalItem("move-page", null);
+    // if (movePage !== "null") {
+    //   navigate(movePage);
+    // } else {
+    //   getAllData();
+    //   // test();
+    // }
+    // setLocalItem("move-page", null);
+    getAllData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -49,7 +51,7 @@ const DtksLogic = () => {
 
   useEffect(() => {
     const { filter_nik_kk } = inputFilter;
-    if (filter_nik_kk !== "") {
+    if (filter_nik_kk.length >= 16) {
       getAllDataFilter("NIK", filter_nik_kk, false);
     } else {
       getAllData();
@@ -94,18 +96,28 @@ const DtksLogic = () => {
 
   const onChangeFilter = (event) => {
     const { name, value } = event.target;
-    setInputFilter({
-      ...inputFilter,
-      [name]: value,
-    });
+
+    console.log("length", value.length);
+
+    if (value.length <= 16) {
+      setIsError(true);
+      setInputFilter({
+        ...inputFilter,
+        [name]: value,
+      });
+    } else {
+      setIsError(false);
+    }
   };
 
   const onSearch = (e) => {
     if (e.key === "Enter") {
       const { filter_nik_kk } = inputFilter;
-      if (filter_nik_kk !== "") {
+      if (filter_nik_kk.length >= 16) {
+        setIsError(false);
         getAllDataFilter("NIK", filter_nik_kk, false);
       } else {
+        setIsError(true);
         getAllData();
       }
     }
@@ -134,15 +146,17 @@ const DtksLogic = () => {
       });
 
       data1.forEach(async (val, i) => {
-        if (i <= 500) {
+        if (i !== data1.length - 1) {
+          console.log("cek");
           await addData("dtks", val);
+        } else {
+          console.log("berhasil");
+          setNotif({
+            open: true,
+            message: "Data berhasil di tambahkan",
+            variant: "success",
+          });
         }
-      });
-
-      setNotif({
-        open: true,
-        message: "Data berhasil di tambahkan",
-        variant: "success",
       });
     } else {
       // alert("data tidak tersedia");
@@ -177,6 +191,8 @@ const DtksLogic = () => {
       message: "",
       variant: "",
     });
+
+    window.location.href = "http://localhost:3000/main";
   };
 
   return {
@@ -184,6 +200,8 @@ const DtksLogic = () => {
       inputUpload,
       data,
       notif,
+      isError,
+      filterNikKK: inputFilter.filter_nik_kk,
     },
     func: {
       onClickUpload,

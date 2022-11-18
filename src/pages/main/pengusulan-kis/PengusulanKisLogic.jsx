@@ -12,6 +12,7 @@ import {
 } from "../../../values/Utilitas";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
+import { async } from "@firebase/util";
 
 const PengusulanKisLogic = () => {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,7 @@ const PengusulanKisLogic = () => {
   const [input, setInput] = useState({
     no_kk: "",
     nik: "",
-    nama_lengkap: "",
+    nama: "",
     pisat: "",
     tempat_lahir: "",
     tanggal_lahir: "",
@@ -44,6 +45,8 @@ const PengusulanKisLogic = () => {
     filter_tahun: "",
   });
 
+  const [isError, setIsError] = useState(false);
+
   const [data, setData] = useState([]);
 
   const [click, setClick] = useState(false);
@@ -56,15 +59,29 @@ const PengusulanKisLogic = () => {
     variant: "",
   });
 
+  const [confirm, setConfirm] = useState({
+    open: false,
+    message: "",
+    variant: "",
+  });
+
+  const [id, setId] = useState("");
+
   const navigate = useNavigate();
 
   const validator = InputValidator(null, 14);
 
-  const { addData, getData, multipleSearching } = FirebaseConfig();
+  const {
+    addData,
+    getData,
+    multipleSearching,
+    deleteSpecifict,
+    updateDataDoc,
+  } = FirebaseConfig();
 
-  // useEffect(() => {
-  //   getAllData();
-  // }, []);
+  useEffect(() => {
+    getAllData();
+  }, []);
 
   useEffect(() => {
     const {
@@ -88,7 +105,7 @@ const PengusulanKisLogic = () => {
     if (
       filter_tahun !== "" ||
       filter_bulan !== "" ||
-      filter_nik_kk !== "" ||
+      filter_nik_kk.length <= 16 ||
       filter_kecamatan !== ""
     ) {
       getAllDataFilter(
@@ -176,6 +193,28 @@ const PengusulanKisLogic = () => {
   };
 
   const handleClose = () => {
+    if (input.id !== undefined) {
+      setInput({
+        no_kk: "",
+        nik: "",
+        nama_lengkap: "",
+        pisat: "",
+        tempat_lahir: "",
+        tanggal_lahir: "",
+        jenis_kelamin: "",
+        status_kawin: "",
+        alamat: "",
+        rw: "",
+        rt: "",
+        kode_pos: "",
+        kecamatan: "",
+        kelurahan: "",
+        no_telpon: "",
+        tahun: getYearNow(),
+        bulan: getMonthNow(),
+      });
+    }
+
     setOpen(false);
   };
 
@@ -183,17 +222,26 @@ const PengusulanKisLogic = () => {
     const { name, value, checked } = event.target;
 
     if (variant === "input") {
-      validator.updateValid(value, index);
+      validator.updateValid(value, index, name);
 
       if (name === "kecamatan") {
         let index = constantKecamatan.indexOf(value);
         setIndexKecamatan(index);
       }
 
-      setInput({
-        ...input,
-        [name]: value,
-      });
+      if (name === "no_kk" || name === "nik") {
+        if (value.length <= 16) {
+          setInput({
+            ...input,
+            [name]: value,
+          });
+        }
+      } else {
+        setInput({
+          ...input,
+          [name]: value,
+        });
+      }
     } else if (variant === "checkbox") {
       validator.updateValid("true", index);
       setInput({
@@ -247,14 +295,14 @@ const PengusulanKisLogic = () => {
   };
 
   const resSucces = () => {
-    setLocalItem("move-page", "/main/pengusulan-kis");
-    navigate("/");
+    navigate(0);
   };
 
-  const onError = (value) => (click ? validator.checkNotValid(value) : null);
+  const onError = (value, key) =>
+    click ? validator.checkNotValid(value, key) : null;
 
-  const onHelperText = (value) =>
-    click ? validator.messageNotValid(value) : null;
+  const onHelperText = (value, key) =>
+    click ? validator.messageNotValid(value, key) : null;
 
   const disableButton = () => (click ? !validator.checkNotValidAll() : null);
 
@@ -276,9 +324,74 @@ const PengusulanKisLogic = () => {
   const onChangeFilter = (event) => {
     const { name, value } = event.target;
     logO("name", name);
-    setInputFilter({
-      ...inputFilter,
-      [name]: value,
+    if (value.length <= 16) {
+      setIsError(true);
+      setInputFilter({
+        ...inputFilter,
+        [name]: value,
+      });
+    } else {
+      setIsError(false);
+    }
+  };
+
+  const onUbah = (e, data) => {
+    e.stopPropagation(); // don't select this row after clicking
+
+    let index = constantKecamatan.indexOf(data.kecamatan);
+    setIndexKecamatan(index);
+    setInput(data);
+    setOpen(true);
+  };
+
+  const onUbahDb = () => {
+    console.log("input", input);
+    validator.setTofalseValue(input);
+
+    setClick(true);
+
+    const valid = validator.checkNotValidAll();
+
+    if (valid) {
+      setOpen(false);
+      onOpenConfirm("Apakah anda yakin ingin mengubah data ini?", "edit");
+    }
+  };
+
+  const onHapus = (e, id) => {
+    e.stopPropagation(); // don't select this row after clicking
+    setId(id);
+    onOpenConfirm("Apakah anda yakin ingin menghapus?", "delete");
+  };
+
+  const onOpenConfirm = (message, variant) => {
+    setConfirm({
+      open: true,
+      message: message,
+      variant: variant,
+    });
+  };
+
+  const onSuccesConfirm = async () => {
+    if (confirm.variant === "edit") {
+      await updateDataDoc("pengusulan-kis", input.id, input);
+      handleClose();
+    } else {
+      await deleteSpecifict("pengusulan-kis", id);
+      onCloseConfirm();
+    }
+
+    setNotif({
+      open: true,
+      message: "Data berhasil di hapus",
+      variant: "success",
+    });
+  };
+
+  const onCloseConfirm = () => {
+    setConfirm({
+      open: false,
+      message: "",
     });
   };
 
@@ -295,6 +408,11 @@ const PengusulanKisLogic = () => {
       resSucces,
       downloadExcell,
       onChangeFilter,
+      onUbah,
+      onHapus,
+      onSuccesConfirm,
+      onCloseConfirm,
+      onUbahDb,
     },
     value: {
       open,
@@ -302,6 +420,9 @@ const PengusulanKisLogic = () => {
       indexKecamatan,
       notif,
       data,
+      filterNik: inputFilter.filter_nik_kk,
+      isError,
+      confirm,
     },
   };
 };

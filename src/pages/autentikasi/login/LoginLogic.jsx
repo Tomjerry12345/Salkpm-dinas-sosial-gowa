@@ -23,6 +23,12 @@ const LoginLogic = () => {
 
   const { getData } = FirebaseConfig();
 
+  const [visiblePassword, setVisiblePassword] = useState(false)
+
+  const onSetVisible = () => {
+    setVisiblePassword(!visiblePassword)
+  }
+
   const onChange = (event, index) => {
     const { name, value } = event.target;
     validator.updateValid(value, index);
@@ -77,11 +83,13 @@ const LoginLogic = () => {
       onError,
       onHelperText,
       disableButton,
+      onSetVisible
     },
     value: {
       input,
       notif,
       setNotif,
+      visiblePassword
     },
   };
 };

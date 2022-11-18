@@ -29,32 +29,89 @@ import {
 import "./PengusulanKis.scss";
 import ModalNotif from "../../../component/modal/ModalNotif";
 import { DataGrid } from "@mui/x-data-grid";
-
-const columns = [
-  { field: "nik", headerName: "NIK", width: 150 },
-  { field: "no_kk", headerName: "NoKK", width: 150 },
-  { field: "nama_lengkap", headerName: "Nama Lengkap", width: 150 },
-  { field: "kecamatan", headerName: "Kecamatan", width: 120 },
-  { field: "kelurahan", headerName: "Kelurahan", width: 120 },
-  { field: "pisat", headerName: "PISAT", width: 150 },
-  { field: "tempat_lahir", headerName: "Tempat Lahir", width: 150 },
-  { field: "tanggal_lahir", headerName: "Tanggal Lahir", width: 150 },
-  { field: "jenis_kelamin", headerName: "Jenis Kelamin", width: 150 },
-  { field: "status_kawin", headerName: "Status Kawin", width: 150 },
-  {
-    field: "alamat",
-    headerName: "Alamat Tempat Tinggal",
-    width: 150,
-  },
-  { field: "kode_pos", headerName: "Kode Pos", width: 150 },
-  { field: "rw", headerName: "RW", width: 150 },
-  { field: "rt", headerName: "RT", width: 150 },
-  { field: "no_telpon", headerName: "Nomor Telepon", width: 150 },
-];
+import DialogConfirm from "../../../component/modal/DialogConfirm";
 
 const PengusulanKisPage = () => {
   const { func, value } = PengusulanKisLogic();
   const { open, variant, message } = value.notif;
+
+  const columns = [
+    { field: "nik", headerName: "NIK", width: 150 },
+    { field: "no_kk", headerName: "NoKK", width: 150 },
+    { field: "nama", headerName: "Nama Lengkap", width: 180 },
+    { field: "kecamatan", headerName: "Kecamatan", width: 200 },
+    { field: "kelurahan", headerName: "Kelurahan", width: 200 },
+    { field: "pisat", headerName: "PISAT", width: 150 },
+    { field: "tempat_lahir", headerName: "Tempat Lahir", width: 150 },
+    { field: "tanggal_lahir", headerName: "Tanggal Lahir", width: 150 },
+    { field: "jenis_kelamin", headerName: "Jenis Kelamin", width: 150 },
+    { field: "status_kawin", headerName: "Status Kawin", width: 150 },
+    {
+      field: "alamat",
+      headerName: "Alamat Tempat Tinggal",
+      width: 150,
+    },
+    { field: "kode_pos", headerName: "Kode Pos", width: 150 },
+    { field: "rw", headerName: "RW", width: 150 },
+    { field: "rt", headerName: "RT", width: 150 },
+    { field: "no_telpon", headerName: "Nomor Telepon", width: 150 },
+    {
+      field: "action",
+      headerName: "Action",
+      align: "center",
+      headerAlign: "center",
+      editable: false,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: false,
+      width: 200,
+      renderCell: (params) => {
+        const id = params.row.id;
+        const row = params.row;
+
+        const data = {
+          no_kk: row.no_kk,
+          nik: row.nik,
+          nama: row.nama,
+          pisat: row.pisat,
+          tempat_lahir: row.tempat_lahir,
+          tanggal_lahir: row.tanggal_lahir,
+          jenis_kelamin: row.jenis_kelamin,
+          status_kawin: row.status_kawin,
+          alamat: row.alamat,
+          rw: row.rw,
+          rt: row.rt,
+          kode_pos: row.kode_pos,
+          kecamatan: row.kecamatan,
+          kelurahan: row.kelurahan,
+          no_telpon: row.no_telpon,
+          id: row.id,
+          bulan: row.bulan,
+          tahun: row.tahun,
+        };
+
+        return (
+          <Stack direction="row" spacing={2}>
+            <Button
+              color="success"
+              variant="outlined"
+              onClick={(e) => func.onUbah(e, data)}
+            >
+              Ubah
+            </Button>
+            <Button
+              color="error"
+              variant="outlined"
+              onClick={(e) => func.onHapus(e, id)}
+            >
+              Hapus
+            </Button>
+          </Stack>
+        );
+      },
+    },
+  ];
+
   return (
     <>
       <Typography variant="h5" sx={{ mb: 4 }}>
@@ -123,12 +180,19 @@ const PengusulanKisPage = () => {
             name="filter_nik_kk"
             variant="outlined"
             label="Input NIK"
+            value={value.filterNik}
             onChange={func.onChangeFilter}
+            error={value.isError}
+            helperText={
+              value.isError
+                ? "Inputan tidak boleh kurang dari 16 karakter"
+                : null
+            }
           />
         </Stack>
       </Stack>
 
-      <ShowData value={value} />
+      <ShowData value={value} columns={columns} />
 
       <TambahData value={value} func={func} />
 
@@ -157,11 +221,18 @@ const PengusulanKisPage = () => {
         message={message}
         onSucces={func.resSucces}
       />
+
+      <DialogConfirm
+        open={value.confirm.open}
+        message={value.confirm.message}
+        onSucces={func.onSuccesConfirm}
+        onClose={func.onCloseConfirm}
+      />
     </>
   );
 };
 
-const ShowData = ({ value }) => (
+const ShowData = ({ value, columns }) => (
   <div style={{ height: 400, width: "100%" }}>
     <DataGrid
       rows={value.data}
@@ -183,11 +254,12 @@ const TambahData = ({ value, func }) => {
     onTambah,
     handleClose,
     onChangeDate,
+    onUbahDb,
   } = func;
   const {
     no_kk,
     nik,
-    nama_lengkap,
+    nama,
     pisat,
     tempat_lahir,
     tanggal_lahir,
@@ -208,7 +280,9 @@ const TambahData = ({ value, func }) => {
       onClose={handleClose}
     >
       <Stack alignItems="center">
-        <DialogTitle>Tambah Data</DialogTitle>
+        <DialogTitle>
+          {input.id === undefined ? "Tambah Data" : "Edit Data"}
+        </DialogTitle>
       </Stack>
       <DialogContent
         sx={{
@@ -223,37 +297,37 @@ const TambahData = ({ value, func }) => {
           <TextField
             name="no_kk"
             label="No.KK"
-            type="text"
+            type="number"
             variant="outlined"
             onChange={(e) => onChange(e, 0, "input")}
             required
             value={no_kk}
-            error={onError(no_kk)}
-            helperText={onHelperText(no_kk)}
+            error={onError(no_kk, "no_kk")}
+            helperText={onHelperText(no_kk, "no_kk")}
           />
 
           <TextField
             name="nik"
             label="NIK"
-            type="text"
+            type="number"
             variant="outlined"
             onChange={(e) => onChange(e, 1, "input")}
             required
             value={nik}
-            error={onError(nik)}
-            helperText={onHelperText(nik)}
+            error={onError(nik, "nik")}
+            helperText={onHelperText(nik, "nik")}
           />
 
           <TextField
-            name="nama_lengkap"
+            name="nama"
             label="Nama lengkap"
             type="text"
             variant="outlined"
             onChange={(e) => onChange(e, 2, "input")}
             required
-            value={nama_lengkap}
-            error={onError(nama_lengkap)}
-            helperText={onHelperText(nama_lengkap)}
+            value={nama}
+            error={onError(nama)}
+            helperText={onHelperText(nama)}
           />
 
           <FormControl className="custom-select" fullWidth>
@@ -349,7 +423,7 @@ const TambahData = ({ value, func }) => {
           <TextField
             name="alamat"
             label="Alamat tempat tinggal"
-            type="email"
+            type="text"
             variant="outlined"
             onChange={(e) => onChange(e, 8, "input")}
             required
@@ -362,7 +436,7 @@ const TambahData = ({ value, func }) => {
             <TextField
               name="rw"
               label="RW"
-              type="text"
+              type="number"
               variant="outlined"
               onChange={(e) => onChange(e, 9, "input")}
               required
@@ -374,7 +448,7 @@ const TambahData = ({ value, func }) => {
             <TextField
               name="rt"
               label="RT"
-              type="text"
+              type="number"
               variant="outlined"
               onChange={(e) => onChange(e, 10, "input")}
               required
@@ -387,7 +461,7 @@ const TambahData = ({ value, func }) => {
           <TextField
             name="kode_pos"
             label="Kode pos"
-            type="text"
+            type="number"
             variant="outlined"
             onChange={(e) => onChange(e, 11, "input")}
             required
@@ -447,7 +521,7 @@ const TambahData = ({ value, func }) => {
           <TextField
             name="no_telpon"
             label="Nomor Telepon"
-            type="text"
+            type="number"
             variant="outlined"
             onChange={(e) => onChange(e, 14, "input")}
             required
@@ -472,10 +546,11 @@ const TambahData = ({ value, func }) => {
 
         <Button
           className="succes-btn"
-          onClick={onTambah}
+          variant="contained"
+          onClick={input.id === undefined ? onTambah : onUbahDb}
           disabled={disableButton()}
         >
-          Tambah
+          {input.id === undefined ? "Tambah" : "Edit"}
         </Button>
       </DialogActions>
     </Dialog>
