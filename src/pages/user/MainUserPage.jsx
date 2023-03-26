@@ -2,13 +2,11 @@ import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-
-import AppBarComponent from "../../component/appbar/AppBarComponent";
-import DrawerComponent from "../../component/drawer/DrawerComponent";
 import { Outlet } from "react-router-dom";
-import KusionerPage from "./kusioner/KusionerPage";
+import AppBarComponent from "../../component/appbar/user/AppBarUserComponent";
+import DrawerComponent from "../../component/drawer/user/DrawerUserComponent";
 
-const DashboardContent = () => {
+const MainUserPage = () => {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -39,6 +37,4 @@ const DashboardContent = () => {
   );
 };
 
-export default function MainPage() {
-  return <DashboardContent />;
-}
+export default MainUserPage;

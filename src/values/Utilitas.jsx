@@ -15,8 +15,7 @@ export const getLocalItem = (key) => localStorage.getItem(key);
 
 export const log = (message) => console.log(message);
 
-export const logO = (tag, value) =>
-  console.log(`${tag} => ${JSON.stringify(value)}`);
+export const logO = (tag, value) => console.log(tag, value);
 
 export const logS = (tag, value) => console.log(`${tag} => ${value}`);
 

@@ -4,8 +4,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 
-import { mainListItems } from "./ListItems";
-import DrawerLogic from "./DrawerLogic";
+import { ListMenuUser, mainListItems } from "./ListMenuUser";
+import DrawerLogic from "./DrawerUserLogic";
 
 const drawerWidth = 240;
 
@@ -48,7 +48,9 @@ const DrawerComponent = ({ open, toggleDrawer }) => {
         }}
       ></Toolbar>
       <Divider />
-      <List component="nav">{mainListItems(onClick, isSelectedPage)}</List>
+      <List component="nav">
+        <ListMenuUser onClick={onClick} isSelectedPage={isSelectedPage} />
+      </List>
       <Divider />
     </Drawer>
   );

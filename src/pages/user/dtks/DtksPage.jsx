@@ -28,7 +28,7 @@ const DtksPage = () => {
       >
         <Stack display="flex" direction="column" alignItems="center">
           <Button variant="outlined" onClick={func.onClickUpload}>
-            Upload Excell
+            Unggah Excell
           </Button>
           <input
             type="file"
@@ -47,13 +47,15 @@ const DtksPage = () => {
         <TextField
           name="filter_nik_kk"
           variant="outlined"
-          label="Input NIK / No. KK"
+          label="Masukkan NIK / No. KK"
           onChange={func.onChangeFilter}
           onKeyDown={func.onSearch}
           type="number"
           value={value.filterNikKK}
           error={value.isError}
-          helperText={value.isError ? "Inputan tidak boleh kurang dari 16 karakter" : null}
+          helperText={
+            value.isError ? "Inputan tidak boleh kurang dari 16 karakter" : null
+          }
         />
       </Stack>
       <div style={{ height: 400, width: "100%" }}>

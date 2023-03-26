@@ -3,8 +3,6 @@ import ReactDOM from "react-dom/client";
 import "./index.scss";
 import reportWebVitals from "./reportWebVitals";
 import RoutersConfig from "./config/RoutersConfig";
-import { Provider } from "react-redux";
-import ReduxConfig from "./config/ReduxConfig";
 import { createTheme } from "@mui/material";
 import { colorPrimary } from "./values/Colors";
 import { ThemeProvider } from "@emotion/react";
@@ -27,11 +25,11 @@ const theme = createTheme({
 
 root.render(
   <React.StrictMode>
-    <Provider store={ReduxConfig()}>
+    
       <ThemeProvider theme={theme}>
         <RoutersConfig />
       </ThemeProvider>
-    </Provider>
+
   </React.StrictMode>
 );
 

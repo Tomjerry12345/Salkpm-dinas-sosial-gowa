@@ -6,31 +6,22 @@ import SearchIcon from "@mui/icons-material/Search";
 import ArticleIcon from "@mui/icons-material/Article";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 
-export const mainListItems = (onClick, isSelectedPage) => {
+export const ListMenuUser = ({ onClick, isSelectedPage }) => {
   return (
     <React.Fragment>
-      <ListItemButton
-        onClick={() => onClick("dtks")}
-        selected={isSelectedPage("/main")}
-      >
+      <ListItemButton onClick={() => onClick("dtks")} selected={isSelectedPage("/main")}>
         <ListItemIcon>
           <SearchIcon color="cinav" />
         </ListItemIcon>
         <ListItemText primary="Cek DTKS" />
       </ListItemButton>
-      <ListItemButton
-        onClick={() => onClick("pengunjung")}
-        selected={isSelectedPage("/main/daftar-pengunjung")}
-      >
+      <ListItemButton onClick={() => onClick("pengunjung")} selected={isSelectedPage("/main/daftar-pengunjung")}>
         <ListItemIcon>
           <ArticleIcon color="cinav" />
         </ListItemIcon>
         <ListItemText primary="Daftar Pengunjung" />
       </ListItemButton>
-      <ListItemButton
-        onClick={() => onClick("kis")}
-        selected={isSelectedPage("/main/pengusulan-kis")}
-      >
+      <ListItemButton onClick={() => onClick("kis")} selected={isSelectedPage("/main/pengusulan-kis")}>
         <ListItemIcon>
           <NoteAddIcon color="cinav" />
         </ListItemIcon>

@@ -12,31 +12,37 @@ import {
 } from "../../../values/Utilitas";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
+import { async } from "@firebase/util";
 
-const DaftarPengunjungLogic = () => {
+const PengusulanKisLogic = () => {
   const [open, setOpen] = useState(false);
+
   const [input, setInput] = useState({
-    nama_petugas: "",
-    nama: "",
     no_kk: "",
     nik: "",
-    kelurahan: "",
-    kecamatan: "",
-    alamat: "",
-    no_telpon: "",
-    jenis_layanan: "",
-    kelengkapan_berkas: {
-      kartu_keluarga: false,
-      ktp: false,
-      kks: false,
-      kis: false,
-      sktm_desa_kelurahan: false,
-      domisili: false,
-      foto_kondisi_rumah: false,
-    },
+    nama: "",
+    pisat: "",
+    tempat_lahir: "",
     tanggal_lahir: "",
-    bulan: getMonthNow(),
+    jenis_kelamin: "",
+    status_kawin: "",
+    alamat: "",
+    rw: "",
+    rt: "",
+    kode_pos: "",
+    kecamatan: "",
+    kelurahan: "",
+    no_telpon: "",
     tahun: getYearNow(),
+    bulan: getMonthNow(),
+  });
+
+  const [inputFilter, setInputFilter] = useState({
+    filter_kecamatan: "",
+    filter_jenis_layanan: "",
+    filter_nik_kk: "",
+    filter_bulan: "",
+    filter_tahun: "",
   });
 
   const [isError, setIsError] = useState(false);
@@ -46,14 +52,6 @@ const DaftarPengunjungLogic = () => {
   const [click, setClick] = useState(false);
 
   const [indexKecamatan, setIndexKecamatan] = useState(null);
-
-  const [inputFilter, setInputFilter] = useState({
-    filter_kecamatan: "",
-    filter_jenis_layanan: "",
-    filter_nik_kk: "",
-    filter_bulan: "",
-    filter_tahun: "",
-  });
 
   const [notif, setNotif] = useState({
     open: false,
@@ -71,7 +69,7 @@ const DaftarPengunjungLogic = () => {
 
   const navigate = useNavigate();
 
-  const validator = InputValidator(null, 10);
+  const validator = InputValidator(null, 14);
 
   const {
     addData,
@@ -81,25 +79,34 @@ const DaftarPengunjungLogic = () => {
     updateDataDoc,
   } = FirebaseConfig();
 
-  // useEffect(() => {
-  //   getAllData();
-  // }, []);
+  useEffect(() => {
+    getAllData();
+  }, []);
 
   useEffect(() => {
     const {
-      filter_jenis_layanan,
+      // filter_jenis_layanan,
       filter_nik_kk,
       filter_kecamatan,
       filter_bulan,
       filter_tahun,
     } = inputFilter;
 
+    // if (filter_kecamatan !== "") {
+    //   getAllDataFilter("kecamatan", filter_kecamatan, "", "");
+    // } else if (filter_nik_kk !== "") {
+    //   getAllDataFilter("nik", filter_nik_kk, "", "");
+    // } else if (filter_tahun !== "" && filter_bulan !== "") {
+    //   getAllDataFilter("tahun", parseInt(filter_tahun), "bulan", filter_bulan);
+    // } else {
+    //   getAllData();
+    // }
+
     if (
       filter_tahun !== "" ||
       filter_bulan !== "" ||
-      filter_nik_kk !== "" ||
-      filter_kecamatan !== "" ||
-      filter_jenis_layanan !== ""
+      filter_nik_kk.length !== "" ||
+      filter_kecamatan !== ""
     ) {
       getAllDataFilter(
         "tahun",
@@ -109,9 +116,7 @@ const DaftarPengunjungLogic = () => {
         "nik",
         filter_nik_kk,
         "kecamatan",
-        filter_kecamatan,
-        "jenis_layanan",
-        filter_jenis_layanan
+        filter_kecamatan
       );
     } else {
       getAllData();
@@ -121,25 +126,12 @@ const DaftarPengunjungLogic = () => {
   }, [inputFilter]);
 
   const getAllData = async () => {
-    const snapshot = await getData("pengunjung");
+    const snapshot = await getData("pengusulan-kis");
     let listData = [];
 
     snapshot.forEach((doc) => {
       const docData = doc.data();
-      const kelengkapanBerkas = docData.kelengkapan_berkas;
-      const newKelengkapanBerkas = [];
-
-      for (const i in kelengkapanBerkas) {
-        if (kelengkapanBerkas[i] === true) {
-          newKelengkapanBerkas.push(i);
-        }
-      }
-
-      delete docData.kelengkapan_berkas;
-      listData.push({
-        ...docData,
-        kelengkapan_berkas: newKelengkapanBerkas.toString(),
-      });
+      listData.push(docData);
     });
     setData(listData);
   };
@@ -152,12 +144,13 @@ const DaftarPengunjungLogic = () => {
     key2,
     value2,
     key3,
-    value3,
-    key4,
-    value4
+    value3
   ) => {
-    const snapshot = await multipleSearching(
-      "pengunjung",
+    logS("test");
+    let snapshot;
+
+    snapshot = await multipleSearching(
+      "pengusulan-kis",
       key,
       value,
       key1,
@@ -166,9 +159,24 @@ const DaftarPengunjungLogic = () => {
       value2,
       key3,
       value3,
-      key4,
-      value4
+      "",
+      ""
     );
+
+    // snapshot = await searching("pengusulan-kis", key, value);
+
+    // if (key !== "" && value !== "" && key1 !== "" && value1 !== "") {
+    //   logS("multiple", `${key} => ${key1} => ${value} => ${value1}`);
+    //   snapshot = await multipleSearching(
+    //     "pengusulan-kis",
+    //     key,
+    //     key1,
+    //     value,
+    //     value1
+    //   );
+    // } else {
+    //   snapshot = await searching("pengusulan-kis", key, value);
+    // }
 
     let listData = [];
 
@@ -187,29 +195,26 @@ const DaftarPengunjungLogic = () => {
   const handleClose = () => {
     if (input.id !== undefined) {
       setInput({
-        nama_petugas: "",
-        nama: "",
         no_kk: "",
         nik: "",
-        kelurahan: "",
-        kecamatan: "",
-        alamat: "",
-        no_telpon: "",
-        jenis_layanan: "",
-        kelengkapan_berkas: {
-          kartu_keluarga: false,
-          ktp: false,
-          kks: false,
-          kis: false,
-          sktm: false,
-          domisili: false,
-          foto_kondisi_rumah: false,
-        },
+        nama_lengkap: "",
+        pisat: "",
+        tempat_lahir: "",
         tanggal_lahir: "",
-        bulan: getMonthNow(),
+        jenis_kelamin: "",
+        status_kawin: "",
+        alamat: "",
+        rw: "",
+        rt: "",
+        kode_pos: "",
+        kecamatan: "",
+        kelurahan: "",
+        no_telpon: "",
         tahun: getYearNow(),
+        bulan: getMonthNow(),
       });
     }
+
     setOpen(false);
   };
 
@@ -249,22 +254,8 @@ const DaftarPengunjungLogic = () => {
     }
   };
 
-  const onChangeFilter = (event) => {
-    const { name, value } = event.target;
-    logO("name", name);
-    if (value.length <= 16) {
-      setIsError(true);
-      setInputFilter({
-        ...inputFilter,
-        [name]: value,
-      });
-    } else {
-      setIsError(false);
-    }
-  };
-
   const onChangeDate = (value) => {
-    validator.updateValid(value, 10);
+    validator.updateValid(value, 5);
 
     const format = value.format("L");
 
@@ -276,23 +267,16 @@ const DaftarPengunjungLogic = () => {
 
   const onTambah = async (e) => {
     setClick(true);
-
     const valid = validator.checkNotValidAll();
 
-    logS("validator.checkNotValidAll", valid);
-
     if (valid) {
+      // alert("false");
       setNotif({
         open: true,
         message: "Sedang di proses...",
         variant: "progress",
       });
-
-      const res = await addData("pengunjung", input);
-
-      if (input.jenis_layanan === "Usulan KIS") {
-        await addData("pengusulan-kis", input);
-      }
+      const res = await addData("pengusulan-kis", input);
 
       if (res) {
         setNotif({
@@ -300,12 +284,13 @@ const DaftarPengunjungLogic = () => {
           message: "Data berhasil di tambahkan",
           variant: "success",
         });
-      } else
+      } else {
         setNotif({
           open: true,
           message: "Data gagal di tambahkan",
           variant: "error",
         });
+      }
     }
   };
 
@@ -321,12 +306,10 @@ const DaftarPengunjungLogic = () => {
 
   const disableButton = () => (click ? !validator.checkNotValidAll() : null);
 
-  const downloadExcell = async (datax, fileName) => {
+  const downloadExcell = async (datax) => {
     datax.forEach((val) => {
       delete val.id;
     });
-
-    logO("datax", datax);
 
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -335,11 +318,21 @@ const DaftarPengunjungLogic = () => {
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excellBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excellBuffer], { type: fileType });
-    FileSaver.saveAs(data, "daftar-pengunjung" + fileExtension);
+    FileSaver.saveAs(data, "pengusulan-kis" + fileExtension);
+  };
+
+  const onChangeFilter = (event) => {
+    const { name, value } = event.target;
+    logO("name", name);
+    setInputFilter({
+      ...inputFilter,
+      [name]: value,
+    });
   };
 
   const onUbah = (e, data) => {
     e.stopPropagation(); // don't select this row after clicking
+
     let index = constantKecamatan.indexOf(data.kecamatan);
     setIndexKecamatan(index);
     setInput(data);
@@ -347,10 +340,7 @@ const DaftarPengunjungLogic = () => {
   };
 
   const onUbahDb = () => {
-    // alert("ubah");
-
     console.log("input", input);
-
     validator.setTofalseValue(input);
 
     setClick(true);
@@ -378,17 +368,20 @@ const DaftarPengunjungLogic = () => {
   };
 
   const onSuccesConfirm = async () => {
+    let massege;
     if (confirm.variant === "edit") {
-      await updateDataDoc("pengunjung", input.id, input);
+      await updateDataDoc("pengusulan-kis", input.id, input);
+      massege = "Data berhasil di ubah";
       handleClose();
     } else {
-      await deleteSpecifict("pengunjung", id);
+      await deleteSpecifict("pengusulan-kis", id);
+      massege = "Data berhasil di hapus";
       onCloseConfirm();
     }
 
     setNotif({
       open: true,
-      message: "Data berhasil di hapus",
+      message: massege,
       variant: "success",
     });
   };
@@ -404,15 +397,15 @@ const DaftarPengunjungLogic = () => {
     func: {
       handleClickOpen,
       handleClose,
-      onChange,
-      onTambah,
       onError,
       onHelperText,
       disableButton,
+      onChange,
       onChangeDate,
+      onTambah,
       resSucces,
-      onChangeFilter,
       downloadExcell,
+      onChangeFilter,
       onUbah,
       onHapus,
       onSuccesConfirm,
@@ -423,9 +416,8 @@ const DaftarPengunjungLogic = () => {
       open,
       input,
       indexKecamatan,
-      data,
       notif,
-      setNotif,
+      data,
       filterNik: inputFilter.filter_nik_kk,
       isError,
       confirm,
@@ -433,4 +425,4 @@ const DaftarPengunjungLogic = () => {
   };
 };
 
-export default DaftarPengunjungLogic;
+export default PengusulanKisLogic;

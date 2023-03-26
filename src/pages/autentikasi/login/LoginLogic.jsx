@@ -23,11 +23,11 @@ const LoginLogic = () => {
 
   const { getData } = FirebaseConfig();
 
-  const [visiblePassword, setVisiblePassword] = useState(false)
+  const [visiblePassword, setVisiblePassword] = useState(false);
 
   const onSetVisible = () => {
-    setVisiblePassword(!visiblePassword)
-  }
+    setVisiblePassword(!visiblePassword);
+  };
 
   const onChange = (event, index) => {
     const { name, value } = event.target;
@@ -46,33 +46,42 @@ const LoginLogic = () => {
         message: "Silahkan tunggu ...",
         variant: "progress",
       });
-      const snapshot = await getData("admin");
-      snapshot.forEach((doc) => {
+
+      const getAdmin = await getData("admin");
+      getAdmin.forEach((doc) => {
         const data = doc.data();
 
-        if (
-          input.username === data.username &&
-          input.password === data.password
-        ) {
-          localStorage.setItem("auth", "true");
+        if (input.username === data.username && input.password === data.password) {
+          localStorage.setItem("auth", "admin");
           localStorage.setItem("move-page", "null");
           localStorage.setItem("index-menu", "null");
-          navigate("/main");
-        } else {
-          setNotif({
-            open: true,
-            message: "Username atau password salah",
-            variant: "error",
-          });
+          navigate("/admin");
         }
+      });
+
+      const getUser = await getData("user");
+      getUser.forEach((doc) => {
+        const data = doc.data();
+
+        if (input.username === data.username && input.password === data.password) {
+          localStorage.setItem("auth", "user");
+          localStorage.setItem("move-page", "null");
+          localStorage.setItem("index-menu", "null");
+          navigate("/user");
+        }
+      });
+
+      setNotif({
+        open: true,
+        message: "Username atau password salah",
+        variant: "error",
       });
     }
   };
 
   const onError = (value) => (click ? validator.checkNotValid(value) : null);
 
-  const onHelperText = (value) =>
-    click ? validator.messageNotValid(value) : null;
+  const onHelperText = (value) => (click ? validator.messageNotValid(value) : null);
 
   const disableButton = () => (click ? !validator.checkNotValidAll() : null);
 
@@ -83,13 +92,13 @@ const LoginLogic = () => {
       onError,
       onHelperText,
       disableButton,
-      onSetVisible
+      onSetVisible,
     },
     value: {
       input,
       notif,
       setNotif,
-      visiblePassword
+      visiblePassword,
     },
   };
 };

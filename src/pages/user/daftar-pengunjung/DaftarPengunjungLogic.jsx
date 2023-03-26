@@ -6,43 +6,38 @@ import InputValidator from "../../../values/InputValidator";
 import {
   getMonthNow,
   getYearNow,
+  log,
   logO,
   logS,
   setLocalItem,
 } from "../../../values/Utilitas";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
-import { async } from "@firebase/util";
 
-const PengusulanKisLogic = () => {
+const DaftarPengunjungLogic = () => {
   const [open, setOpen] = useState(false);
-
   const [input, setInput] = useState({
+    nama_petugas: "",
+    nama: "",
     no_kk: "",
     nik: "",
-    nama: "",
-    pisat: "",
-    tempat_lahir: "",
-    tanggal_lahir: "",
-    jenis_kelamin: "",
-    status_kawin: "",
-    alamat: "",
-    rw: "",
-    rt: "",
-    kode_pos: "",
-    kecamatan: "",
     kelurahan: "",
+    kecamatan: "",
+    alamat: "",
     no_telpon: "",
-    tahun: getYearNow(),
+    jenis_layanan: "",
+    kelengkapan_berkas: {
+      kartu_keluarga: false,
+      ktp: false,
+      kks: false,
+      kis: false,
+      sktm_desa_kelurahan: false,
+      domisili: false,
+      foto_kondisi_rumah: false,
+    },
+    tanggal_lahir: "",
     bulan: getMonthNow(),
-  });
-
-  const [inputFilter, setInputFilter] = useState({
-    filter_kecamatan: "",
-    filter_jenis_layanan: "",
-    filter_nik_kk: "",
-    filter_bulan: "",
-    filter_tahun: "",
+    tahun: getYearNow(),
   });
 
   const [isError, setIsError] = useState(false);
@@ -52,6 +47,14 @@ const PengusulanKisLogic = () => {
   const [click, setClick] = useState(false);
 
   const [indexKecamatan, setIndexKecamatan] = useState(null);
+
+  const [inputFilter, setInputFilter] = useState({
+    filter_kecamatan: "",
+    filter_jenis_layanan: "",
+    filter_nik_kk: "",
+    filter_bulan: "",
+    filter_tahun: "",
+  });
 
   const [notif, setNotif] = useState({
     open: false,
@@ -69,7 +72,7 @@ const PengusulanKisLogic = () => {
 
   const navigate = useNavigate();
 
-  const validator = InputValidator(null, 14);
+  const validator = InputValidator(null, 10);
 
   const {
     addData,
@@ -79,34 +82,27 @@ const PengusulanKisLogic = () => {
     updateDataDoc,
   } = FirebaseConfig();
 
-  useEffect(() => {
-    getAllData();
-  }, []);
+  // useEffect(() => {
+  //   getAllData();
+  // }, []);
 
   useEffect(() => {
     const {
-      // filter_jenis_layanan,
+      filter_jenis_layanan,
       filter_nik_kk,
       filter_kecamatan,
       filter_bulan,
       filter_tahun,
     } = inputFilter;
 
-    // if (filter_kecamatan !== "") {
-    //   getAllDataFilter("kecamatan", filter_kecamatan, "", "");
-    // } else if (filter_nik_kk !== "") {
-    //   getAllDataFilter("nik", filter_nik_kk, "", "");
-    // } else if (filter_tahun !== "" && filter_bulan !== "") {
-    //   getAllDataFilter("tahun", parseInt(filter_tahun), "bulan", filter_bulan);
-    // } else {
-    //   getAllData();
-    // }
+    logO("filter_kecamatan", filter_kecamatan);
 
     if (
       filter_tahun !== "" ||
       filter_bulan !== "" ||
-      filter_nik_kk.length <= 16 ||
-      filter_kecamatan !== ""
+      filter_nik_kk !== "" ||
+      filter_kecamatan !== "" ||
+      filter_jenis_layanan !== ""
     ) {
       getAllDataFilter(
         "tahun",
@@ -116,7 +112,9 @@ const PengusulanKisLogic = () => {
         "nik",
         filter_nik_kk,
         "kecamatan",
-        filter_kecamatan
+        filter_kecamatan,
+        "jenis_layanan",
+        filter_jenis_layanan
       );
     } else {
       getAllData();
@@ -126,12 +124,25 @@ const PengusulanKisLogic = () => {
   }, [inputFilter]);
 
   const getAllData = async () => {
-    const snapshot = await getData("pengusulan-kis");
+    const snapshot = await getData("pengunjung");
     let listData = [];
 
     snapshot.forEach((doc) => {
       const docData = doc.data();
-      listData.push(docData);
+      const kelengkapanBerkas = docData.kelengkapan_berkas;
+      const newKelengkapanBerkas = [];
+
+      for (const i in kelengkapanBerkas) {
+        if (kelengkapanBerkas[i] === true) {
+          newKelengkapanBerkas.push(i);
+        }
+      }
+
+      delete docData.kelengkapan_berkas;
+      listData.push({
+        ...docData,
+        kelengkapan_berkas: newKelengkapanBerkas.toString(),
+      });
     });
     setData(listData);
   };
@@ -144,13 +155,12 @@ const PengusulanKisLogic = () => {
     key2,
     value2,
     key3,
-    value3
+    value3,
+    key4,
+    value4
   ) => {
-    logS("test");
-    let snapshot;
-
-    snapshot = await multipleSearching(
-      "pengusulan-kis",
+    const snapshot = await multipleSearching(
+      "pengunjung",
       key,
       value,
       key1,
@@ -159,24 +169,9 @@ const PengusulanKisLogic = () => {
       value2,
       key3,
       value3,
-      "",
-      ""
+      key4,
+      value4
     );
-
-    // snapshot = await searching("pengusulan-kis", key, value);
-
-    // if (key !== "" && value !== "" && key1 !== "" && value1 !== "") {
-    //   logS("multiple", `${key} => ${key1} => ${value} => ${value1}`);
-    //   snapshot = await multipleSearching(
-    //     "pengusulan-kis",
-    //     key,
-    //     key1,
-    //     value,
-    //     value1
-    //   );
-    // } else {
-    //   snapshot = await searching("pengusulan-kis", key, value);
-    // }
 
     let listData = [];
 
@@ -195,26 +190,29 @@ const PengusulanKisLogic = () => {
   const handleClose = () => {
     if (input.id !== undefined) {
       setInput({
+        nama_petugas: "",
+        nama: "",
         no_kk: "",
         nik: "",
-        nama_lengkap: "",
-        pisat: "",
-        tempat_lahir: "",
-        tanggal_lahir: "",
-        jenis_kelamin: "",
-        status_kawin: "",
-        alamat: "",
-        rw: "",
-        rt: "",
-        kode_pos: "",
-        kecamatan: "",
         kelurahan: "",
+        kecamatan: "",
+        alamat: "",
         no_telpon: "",
-        tahun: getYearNow(),
+        jenis_layanan: "",
+        kelengkapan_berkas: {
+          kartu_keluarga: false,
+          ktp: false,
+          kks: false,
+          kis: false,
+          sktm: false,
+          domisili: false,
+          foto_kondisi_rumah: false,
+        },
+        tanggal_lahir: "",
         bulan: getMonthNow(),
+        tahun: getYearNow(),
       });
     }
-
     setOpen(false);
   };
 
@@ -254,8 +252,17 @@ const PengusulanKisLogic = () => {
     }
   };
 
+  const onChangeFilter = (event) => {
+    const { name, value } = event.target;
+    logO("name", value);
+    setInputFilter({
+      ...inputFilter,
+      [name]: value,
+    });
+  };
+
   const onChangeDate = (value) => {
-    validator.updateValid(value, 5);
+    validator.updateValid(value, 10);
 
     const format = value.format("L");
 
@@ -267,16 +274,23 @@ const PengusulanKisLogic = () => {
 
   const onTambah = async (e) => {
     setClick(true);
+
     const valid = validator.checkNotValidAll();
 
+    logS("validator.checkNotValidAll", valid);
+
     if (valid) {
-      // alert("false");
       setNotif({
         open: true,
         message: "Sedang di proses...",
         variant: "progress",
       });
-      const res = await addData("pengusulan-kis", input);
+
+      const res = await addData("pengunjung", input);
+
+      if (input.jenis_layanan === "Usulan KIS") {
+        await addData("pengusulan-kis", input);
+      }
 
       if (res) {
         setNotif({
@@ -284,13 +298,12 @@ const PengusulanKisLogic = () => {
           message: "Data berhasil di tambahkan",
           variant: "success",
         });
-      } else {
+      } else
         setNotif({
           open: true,
           message: "Data gagal di tambahkan",
           variant: "error",
         });
-      }
     }
   };
 
@@ -306,10 +319,12 @@ const PengusulanKisLogic = () => {
 
   const disableButton = () => (click ? !validator.checkNotValidAll() : null);
 
-  const downloadExcell = async (datax) => {
+  const downloadExcell = async (datax, fileName) => {
     datax.forEach((val) => {
       delete val.id;
     });
+
+    logO("datax", datax);
 
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -318,26 +333,11 @@ const PengusulanKisLogic = () => {
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excellBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excellBuffer], { type: fileType });
-    FileSaver.saveAs(data, "pengusulan-kis" + fileExtension);
-  };
-
-  const onChangeFilter = (event) => {
-    const { name, value } = event.target;
-    logO("name", name);
-    if (value.length <= 16) {
-      setIsError(true);
-      setInputFilter({
-        ...inputFilter,
-        [name]: value,
-      });
-    } else {
-      setIsError(false);
-    }
+    FileSaver.saveAs(data, "daftar-pengunjung" + fileExtension);
   };
 
   const onUbah = (e, data) => {
     e.stopPropagation(); // don't select this row after clicking
-
     let index = constantKecamatan.indexOf(data.kecamatan);
     setIndexKecamatan(index);
     setInput(data);
@@ -345,7 +345,10 @@ const PengusulanKisLogic = () => {
   };
 
   const onUbahDb = () => {
+    // alert("ubah");
+
     console.log("input", input);
+
     validator.setTofalseValue(input);
 
     setClick(true);
@@ -373,17 +376,20 @@ const PengusulanKisLogic = () => {
   };
 
   const onSuccesConfirm = async () => {
+    let message;
     if (confirm.variant === "edit") {
-      await updateDataDoc("pengusulan-kis", input.id, input);
+      await updateDataDoc("pengunjung", input.id, input);
+      message = "Data berhasil di ubah";
       handleClose();
     } else {
-      await deleteSpecifict("pengusulan-kis", id);
+      await deleteSpecifict("pengunjung", id);
+      message = "Data berhasil di hapus";
       onCloseConfirm();
     }
 
     setNotif({
       open: true,
-      message: "Data berhasil di hapus",
+      message: message,
       variant: "success",
     });
   };
@@ -399,15 +405,15 @@ const PengusulanKisLogic = () => {
     func: {
       handleClickOpen,
       handleClose,
+      onChange,
+      onTambah,
       onError,
       onHelperText,
       disableButton,
-      onChange,
       onChangeDate,
-      onTambah,
       resSucces,
-      downloadExcell,
       onChangeFilter,
+      downloadExcell,
       onUbah,
       onHapus,
       onSuccesConfirm,
@@ -418,8 +424,9 @@ const PengusulanKisLogic = () => {
       open,
       input,
       indexKecamatan,
-      notif,
       data,
+      notif,
+      setNotif,
       filterNik: inputFilter.filter_nik_kk,
       isError,
       confirm,
@@ -427,4 +434,4 @@ const PengusulanKisLogic = () => {
   };
 };
 
-export default PengusulanKisLogic;
+export default DaftarPengunjungLogic;

@@ -44,7 +44,7 @@ export default function KusionerPage({ open, handleClose }) {
           value={showData.nama}
           autoFocus
           margin="dense"
-          label="Input nama"
+          label="Masukkan Nama"
           fullWidth
           variant="standard"
           onChange={(e) => {
@@ -61,7 +61,7 @@ export default function KusionerPage({ open, handleClose }) {
           value={showData.nik}
           autoFocus
           margin="dense"
-          label="Input nik"
+          label="Masukkan NIK"
           fullWidth
           variant="standard"
           onChange={(e) => {
@@ -185,7 +185,7 @@ export default function KusionerPage({ open, handleClose }) {
           </>
         ) : (
           <>
-            <DialogTitle>Kusioner</DialogTitle>
+            <DialogTitle>Kuesioner</DialogTitle>
             <DialogContent>{pertanyaan}</DialogContent>
             <DialogActions>
               <Button onClick={i > 2 ? onTidak : onCancel}>

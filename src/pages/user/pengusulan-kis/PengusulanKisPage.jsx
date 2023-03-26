@@ -2,14 +2,11 @@ import { Stack } from "@mui/system";
 import {
   Box,
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
-  FormGroup,
   FormHelperText,
   InputLabel,
   MenuItem,
@@ -17,37 +14,47 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import DaftarPengunjungLogic from "./DaftarPengunjungLogic";
+import PengusulanKisLogic from "./PengusulanKisLogic";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import {
   constantBulan,
-  constantJenisLayanan,
-  constantKelengkapanBerkas,
+  constantJenisKelamin,
+  constantKecamatan,
   constantKelurahan,
+  constantPisat,
+  constantStatusKawin,
   constantTahun,
 } from "../../../values/Constant";
-import { constantKecamatan } from "../../../values/Constant";
-import "./DaftarPengunjung.scss";
+import "./PengusulanKis.scss";
 import ModalNotif from "../../../component/modal/ModalNotif";
 import { DataGrid } from "@mui/x-data-grid";
 import DialogConfirm from "../../../component/modal/DialogConfirm";
 
-const DaftarPengunjungPage = () => {
-  const { func, value } = DaftarPengunjungLogic();
+const PengusulanKisPage = () => {
+  const { func, value } = PengusulanKisLogic();
   const { open, variant, message } = value.notif;
 
   const columns = [
     { field: "nik", headerName: "NIK", width: 150 },
     { field: "no_kk", headerName: "NoKK", width: 150 },
-    { field: "nama", headerName: "Nama Pengunjung", width: 180 },
+    { field: "nama", headerName: "Nama Lengkap", width: 180 },
     { field: "kecamatan", headerName: "Kecamatan", width: 200 },
     { field: "kelurahan", headerName: "Kelurahan", width: 200 },
-    { field: "jenis_layanan", headerName: "Jenis Layanan", width: 150 },
-    { field: "no_telpon", headerName: "No telepon", width: 150 },
-    { field: "nama_petugas", headerName: "Nama Petugas", width: 150 },
+    { field: "pisat", headerName: "PISAT", width: 150 },
+    { field: "tempat_lahir", headerName: "Tempat Lahir", width: 150 },
     { field: "tanggal_lahir", headerName: "Tanggal Lahir", width: 150 },
-    { field: "alamat", headerName: "Alamat", width: 150 },
+    { field: "jenis_kelamin", headerName: "Jenis Kelamin", width: 150 },
+    { field: "status_kawin", headerName: "Status Kawin", width: 150 },
+    {
+      field: "alamat",
+      headerName: "Alamat Tempat Tinggal",
+      width: 150,
+    },
+    { field: "kode_pos", headerName: "Kode Pos", width: 150 },
+    { field: "rw", headerName: "RW", width: 150 },
+    { field: "rt", headerName: "RT", width: 150 },
+    { field: "no_telpon", headerName: "Nomor Telepon", width: 150 },
     {
       field: "action",
       headerName: "Action",
@@ -62,38 +69,27 @@ const DaftarPengunjungPage = () => {
         const id = params.row.id;
         const row = params.row;
 
-        const newKel = {
-          kartu_keluarga: false,
-          ktp: false,
-          kks: false,
-          kis: false,
-          sktm_desa_kelurahan: false,
-          domisili: false,
-          foto_kondisi_rumah: false,
-        };
-
-        const split = row.kelengkapan_berkas.split(",");
-
-        split.forEach((val) => {
-          newKel[val] = true;
-        });
-
         const data = {
-          nama_petugas: row.nama_petugas,
-          nama: row.nama,
           no_kk: row.no_kk,
           nik: row.nik,
-          kelurahan: row.kelurahan,
-          kecamatan: row.kecamatan,
-          alamat: row.alamat,
-          no_telpon: row.no_telpon,
-          jenis_layanan: row.jenis_layanan,
-          kelengkapan_berkas: newKel,
+          nama: row.nama,
+          pisat: row.pisat,
+          tempat_lahir: row.tempat_lahir,
           tanggal_lahir: row.tanggal_lahir,
+          jenis_kelamin: row.jenis_kelamin,
+          status_kawin: row.status_kawin,
+          alamat: row.alamat,
+          rw: row.rw,
+          rt: row.rt,
+          kode_pos: row.kode_pos,
+          kecamatan: row.kecamatan,
+          kelurahan: row.kelurahan,
+          no_telpon: row.no_telpon,
           id: row.id,
           bulan: row.bulan,
           tahun: row.tahun,
         };
+
         return (
           <Stack direction="row" spacing={2}>
             <Button
@@ -114,27 +110,13 @@ const DaftarPengunjungPage = () => {
         );
       },
     },
-    // {
-    //   field: "action",
-    //   headerName: "Action",
-    //   width: 120,
-    //   renderCell: renderDetailsButton,
-    //   disableClickEventBubbling: true,
-    // },
-    // {
-    //   field: "fullName",
-    //   headerName: "Full name",
-    //   description: "This column has a value getter and is not sortable.",
-    //   sortable: false,
-    //   width: 160,
-    //   valueGetter: (params) =>
-    //     `${params.row.firstName || ""} ${params.row.lastName || ""}`,
-    // },
   ];
 
   return (
     <>
-      <Typography variant="h5">Daftar Pengunjung</Typography>
+      <Typography variant="h5" sx={{ mb: 4 }}>
+        Pengusulan KIS
+      </Typography>
 
       <Stack sx={{ mb: 4, mt: 4 }} direction="horizontal">
         <FormControl sx={{ mr: 2, minWidth: 150 }}>
@@ -150,19 +132,7 @@ const DaftarPengunjungPage = () => {
             ))}
           </Select>
         </FormControl>
-        <FormControl sx={{ minWidth: 170, mr: 2 }}>
-          <InputLabel id="filter_jenis_layanan">Jenis layanan</InputLabel>
-          <Select
-            name="filter_jenis_layanan"
-            labelId="filter_jenis_layanan"
-            label="Jenis layanan"
-            onChange={func.onChangeFilter}
-          >
-            {constantJenisLayanan.map((value) => (
-              <MenuItem value={value}>{value}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+
         <FormControl sx={{ minWidth: 170, mr: 2 }}>
           <InputLabel id="filter_bulan">Bulan</InputLabel>
           <Select
@@ -176,6 +146,7 @@ const DaftarPengunjungPage = () => {
             ))}
           </Select>
         </FormControl>
+
         <FormControl sx={{ minWidth: 170 }}>
           <InputLabel id="filter_tahun">Tahun</InputLabel>
           <Select
@@ -189,26 +160,21 @@ const DaftarPengunjungPage = () => {
             ))}
           </Select>
         </FormControl>
+
         <Stack alignItems="flex-end" style={{ width: "100vw" }}>
           <TextField
             name="filter_nik_kk"
             variant="outlined"
-            label="Input NIK"
-            // value={value.filterNik}
+            label="Masukkan NIK"
+            value={value.filterNik}
             onChange={func.onChangeFilter}
-            // error={value.isError}
-            // helperText={
-            //   value.isError
-            //     ? "Inputan tidak boleh kurang dari 16 karakter"
-            //     : null
-            // }
           />
         </Stack>
       </Stack>
 
       <ShowData value={value} columns={columns} />
 
-      <TambahData func={func} value={value} />
+      <TambahData value={value} func={func} />
 
       <Stack flexDirection="row" justifyContent="space-between" sx={{ mt: 4 }}>
         <Button
@@ -216,12 +182,12 @@ const DaftarPengunjungPage = () => {
           style={{ color: "white" }}
           onClick={() => func.downloadExcell(value.data)}
         >
-          Download Data
+          Unduh Data
         </Button>
         <Button
           variant="contained"
           style={{ color: "white" }}
-          onClick={() => func.handleClickOpen()}
+          onClick={func.handleClickOpen}
         >
           Tambah Data
         </Button>
@@ -258,7 +224,7 @@ const ShowData = ({ value, columns }) => (
   </div>
 );
 
-const TambahData = ({ func, value }) => {
+const TambahData = ({ value, func }) => {
   const { input, open, indexKecamatan } = value;
   const {
     onError,
@@ -271,28 +237,33 @@ const TambahData = ({ func, value }) => {
     onUbahDb,
   } = func;
   const {
-    nama_petugas,
-    nama,
     no_kk,
     nik,
-    kelurahan,
-    kecamatan,
-    alamat,
-    no_telpon,
-    jenis_layanan,
-    kelengkapan_berkas,
+    nama,
+    pisat,
+    tempat_lahir,
     tanggal_lahir,
+    jenis_kelamin,
+    status_kawin,
+    alamat,
+    rw,
+    rt,
+    kode_pos,
+    kecamatan,
+    kelurahan,
+    no_telpon,
   } = input;
   return (
     <Dialog
+      className="custom-dialog-tambah-data"
       open={open}
       onClose={handleClose}
-      className="custom-dialog-tambah-data"
     >
       <Stack alignItems="center">
-        <DialogTitle>Tambah Data</DialogTitle>
+        <DialogTitle>
+          {input.id === undefined ? "Tambah Data" : "Edit Data"}
+        </DialogTitle>
       </Stack>
-
       <DialogContent
         sx={{
           overflowX: "hidden",
@@ -304,28 +275,74 @@ const TambahData = ({ func, value }) => {
           }}
         >
           <TextField
-            name="nama_petugas"
-            label="Nama Petugas"
-            type="text"
+            name="no_kk"
+            label="No.KK"
+            type="number"
             variant="outlined"
             onChange={(e) => onChange(e, 0, "input")}
             required
-            value={nama_petugas}
-            error={onError(nama_petugas)}
-            helperText={onHelperText(nama_petugas)}
+            value={no_kk}
+            error={onError(no_kk, "no_kk")}
+            helperText={onHelperText(no_kk, "no_kk")}
+          />
+
+          <TextField
+            name="nik"
+            label="NIK"
+            type="number"
+            variant="outlined"
+            onChange={(e) => onChange(e, 1, "input")}
+            required
+            value={nik}
+            error={onError(nik, "nik")}
+            helperText={onHelperText(nik, "nik")}
           />
 
           <TextField
             name="nama"
-            label="Nama pengunjung"
+            label="Nama lengkap"
             type="text"
             variant="outlined"
-            onChange={(e) => onChange(e, 1, "input")}
+            onChange={(e) => onChange(e, 2, "input")}
             required
             value={nama}
             error={onError(nama)}
             helperText={onHelperText(nama)}
           />
+
+          <FormControl className="custom-select" fullWidth>
+            <InputLabel>PISAT</InputLabel>
+            <Select
+              name="pisat"
+              label="PISAT"
+              onChange={(e) => onChange(e, 3, "input")}
+              required
+              value={pisat}
+              error={onError(pisat)}
+            >
+              {constantPisat.map((value) => (
+                <MenuItem value={value}>{value}</MenuItem>
+              ))}
+            </Select>
+            {onHelperText(pisat) ? (
+              <FormHelperText sx={{ color: "red" }}>
+                Form harus di isi
+              </FormHelperText>
+            ) : null}
+          </FormControl>
+
+          <TextField
+            name="tempat_lahir"
+            label="Tempat lahir"
+            type="text"
+            variant="outlined"
+            onChange={(e) => onChange(e, 4, "input")}
+            required
+            value={tempat_lahir}
+            error={onError(tempat_lahir)}
+            helperText={onHelperText(tempat_lahir)}
+          />
+
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DatePicker
               label="Tanggal lahir"
@@ -340,36 +357,106 @@ const TambahData = ({ func, value }) => {
               )}
             />
           </LocalizationProvider>
-          <TextField
-            name="no_kk"
-            label="No.KK"
-            type="number"
-            variant="outlined"
-            onChange={(e) => onChange(e, 2, "input")}
-            required
-            value={no_kk}
-            error={onError(no_kk, "no_kk")}
-            helperText={onHelperText(no_kk, "no_kk")}
-          />
+
+          <FormControl className="custom-select" fullWidth>
+            <InputLabel>Jenis Kelamin</InputLabel>
+            <Select
+              name="jenis_kelamin"
+              label="Jenis Kelamin"
+              onChange={(e) => onChange(e, 6, "input")}
+              required
+              value={jenis_kelamin}
+              error={onError(jenis_kelamin)}
+            >
+              {constantJenisKelamin.map((data) => (
+                <MenuItem value={data}>{data}</MenuItem>
+              ))}
+            </Select>
+            {onHelperText(pisat) ? (
+              <FormHelperText sx={{ color: "red" }}>
+                Form harus di isi
+              </FormHelperText>
+            ) : null}
+          </FormControl>
+
+          <FormControl className="custom-select" fullWidth>
+            <InputLabel>Status Kawin</InputLabel>
+            <Select
+              name="status_kawin"
+              label="Status Kawin"
+              onChange={(e) => onChange(e, 7, "input")}
+              required
+              value={status_kawin}
+              error={onError(status_kawin)}
+            >
+              {constantStatusKawin.map((data) => (
+                <MenuItem value={data}>{data}</MenuItem>
+              ))}
+            </Select>
+            {onHelperText(status_kawin) ? (
+              <FormHelperText sx={{ color: "red" }}>
+                Form harus di isi
+              </FormHelperText>
+            ) : null}
+          </FormControl>
 
           <TextField
-            name="nik"
-            label="NIK"
+            name="alamat"
+            label="Alamat tempat tinggal"
+            type="text"
+            variant="outlined"
+            onChange={(e) => onChange(e, 8, "input")}
+            required
+            value={alamat}
+            error={onError(alamat)}
+            helperText={onHelperText(alamat)}
+          />
+
+          <Stack className="custom-stack">
+            <TextField
+              name="rw"
+              label="RW"
+              type="number"
+              variant="outlined"
+              onChange={(e) => onChange(e, 9, "input")}
+              required
+              value={rw}
+              error={onError(rw)}
+              helperText={onHelperText(rw)}
+            />
+
+            <TextField
+              name="rt"
+              label="RT"
+              type="number"
+              variant="outlined"
+              onChange={(e) => onChange(e, 10, "input")}
+              required
+              value={rt}
+              error={onError(rt)}
+              helperText={onHelperText(rt)}
+            />
+          </Stack>
+
+          <TextField
+            name="kode_pos"
+            label="Kode pos"
             type="number"
             variant="outlined"
-            onChange={(e) => onChange(e, 3, "input")}
+            onChange={(e) => onChange(e, 11, "input")}
             required
-            value={nik}
-            error={onError(nik, "nik")}
-            helperText={onHelperText(nik, "nik")}
+            value={kode_pos}
+            error={onError(kode_pos)}
+            helperText={onHelperText(kode_pos)}
           />
-          <Stack className="custom-stack-kecamatan-kelurahan">
+
+          <Stack className="custom-stack">
             <FormControl sx={{ ml: 1, minWidth: 200 }}>
-              <InputLabel id="demo-simple-select-label">Kecamatan</InputLabel>
+              <InputLabel>Kecamatan</InputLabel>
               <Select
                 name="kecamatan"
                 label="Kecamatan"
-                onChange={(e) => onChange(e, 4, "input")}
+                onChange={(e) => onChange(e, 12, "input")}
                 required
                 value={kecamatan}
                 error={onError(kecamatan)}
@@ -389,7 +476,7 @@ const TambahData = ({ func, value }) => {
               <Select
                 name="kelurahan"
                 label="Kelurahan"
-                onChange={(e) => onChange(e, 5, "input")}
+                onChange={(e) => onChange(e, 13, "input")}
                 required
                 value={kelurahan}
                 error={onError(kelurahan)}
@@ -412,113 +499,16 @@ const TambahData = ({ func, value }) => {
           </Stack>
 
           <TextField
-            name="alamat"
-            label="Alamat tempat tinggal"
-            type="text"
-            variant="outlined"
-            onChange={(e) => onChange(e, 6, "input")}
-            required
-            value={alamat}
-            error={onError(alamat)}
-            helperText={onHelperText(alamat)}
-          />
-
-          <TextField
             name="no_telpon"
             label="Nomor Telepon"
             type="number"
             variant="outlined"
-            onChange={(e) => onChange(e, 7, "input")}
+            onChange={(e) => onChange(e, 14, "input")}
             required
             value={no_telpon}
             error={onError(no_telpon)}
             helperText={onHelperText(no_telpon)}
           />
-
-          <FormControl className="custom-select" fullWidth>
-            <InputLabel>Jenis layanan</InputLabel>
-            <Select
-              name="jenis_layanan"
-              label="Jenis layanan"
-              onChange={(e) => onChange(e, 8, "input")}
-              required
-              value={jenis_layanan}
-              error={onError(jenis_layanan)}
-            >
-              {constantJenisLayanan.map((value) => (
-                <MenuItem value={value}>{value}</MenuItem>
-              ))}
-            </Select>
-            {onHelperText(jenis_layanan) ? (
-              <FormHelperText sx={{ color: "red" }}>
-                Form harus di isi
-              </FormHelperText>
-            ) : null}
-          </FormControl>
-
-          <Typography
-            sx={{
-              mt: 3,
-              ml: 2,
-              fontWeight: 600,
-            }}
-          >
-            Kelengkapan berkas
-          </Typography>
-
-          <Stack
-            className="custom-stack-kelengkapan-berkas"
-            direction="horizontal"
-            justifyContent="space-between"
-          >
-            <FormControl component="fieldset" variant="standard">
-              <FormGroup>
-                {constantKelengkapanBerkas[0].map((value) => {
-                  // let newKel;
-                  // if (input.id !== undefined) {
-                  //   const split = kelengkapan_berkas.split(",");
-                  //   split.forEach((val) => {
-                  //     if (value.name === val) {
-                  //       newKel = true;
-                  //     }
-                  //   });
-                  // }
-
-                  return (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={kelengkapan_berkas[value.name]}
-                          onChange={(e) => onChange(e, 9, "checkbox")}
-                          name={value.name}
-                        />
-                      }
-                      label={value.label}
-                    />
-                  );
-                })}
-              </FormGroup>
-            </FormControl>
-
-            <FormControl component="fieldset" variant="standard">
-              <FormGroup>
-                {constantKelengkapanBerkas[1].map((value) => {
-                  return (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={kelengkapan_berkas[value.name]}
-                          onChange={(e) => onChange(e, 9, "checkbox")}
-                          name={value.name}
-                        />
-                      }
-                      label={value.label}
-                    />
-                  );
-                })}
-              </FormGroup>
-            </FormControl>
-          </Stack>
         </Box>
       </DialogContent>
       <DialogActions
@@ -533,6 +523,7 @@ const TambahData = ({ func, value }) => {
         >
           Cancel
         </Button>
+
         <Button
           className="succes-btn"
           variant="contained"
@@ -546,4 +537,4 @@ const TambahData = ({ func, value }) => {
   );
 };
 
-export default DaftarPengunjungPage;
+export default PengusulanKisPage;

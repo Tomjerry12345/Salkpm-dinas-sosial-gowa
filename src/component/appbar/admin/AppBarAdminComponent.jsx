@@ -5,11 +5,11 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import "./AppBarComponent.scss";
+import "../AppBarComponent.scss";
 import { Stack } from "@mui/system";
-import AppBarLogic from "./AppBarLogic";
 import { Button } from "@mui/material";
-import KusionerPage from "../../pages/main/kusioner/KusionerPage";
+import KusionerPage from "../../../pages/user/kusioner/KusionerPage";
+import AppBarAdminLogic from "./AppBarAdminLogic";
 
 const drawerWidth = 240;
 
@@ -35,9 +35,9 @@ const styleSubMenu = {
   color: "white",
 };
 
-const AppBarComponent = ({ open, toggleDrawer }) => {
+const AppBarAdminComponent = ({ open, toggleDrawer }) => {
   const [clickKusioner, setClickKusioner] = React.useState(false);
-  const { onClickNav } = AppBarLogic();
+  const { onClickNav } = AppBarAdminLogic();
 
   const handleClose = () => {
     setClickKusioner(false);
@@ -66,19 +66,11 @@ const AppBarComponent = ({ open, toggleDrawer }) => {
           Dashboard
         </Typography>
         <Stack spacing={2} direction="row">
-          <Button
-            variant="text"
-            style={styleSubMenu}
-            onClick={() => setClickKusioner(true)}
-          >
-            Kusioner
+          <Button variant="text" style={styleSubMenu} onClick={() => setClickKusioner(true)}>
+            Kuesioner
           </Button>
-          <Button
-            variant="text"
-            style={styleSubMenu}
-            onClick={() => onClickNav("logout")}
-          >
-            Logout
+          <Button variant="text" style={styleSubMenu} onClick={() => onClickNav("logout")}>
+            Keluar
           </Button>
         </Stack>
       </Toolbar>
@@ -90,4 +82,4 @@ const AppBarComponent = ({ open, toggleDrawer }) => {
   );
 };
 
-export default AppBarComponent;
+export default AppBarAdminComponent;
