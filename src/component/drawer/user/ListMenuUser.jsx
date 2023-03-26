@@ -15,13 +15,13 @@ export const ListMenuUser = ({ onClick, isSelectedPage }) => {
         </ListItemIcon>
         <ListItemText primary="Cek DTKS" />
       </ListItemButton>
-      <ListItemButton onClick={() => onClick("pengunjung")} selected={isSelectedPage("/main/daftar-pengunjung")}>
+      <ListItemButton onClick={() => onClick("pengunjung")} selected={isSelectedPage("/user/daftar-pengunjung")}>
         <ListItemIcon>
           <ArticleIcon color="cinav" />
         </ListItemIcon>
         <ListItemText primary="Daftar Pengunjung" />
       </ListItemButton>
-      <ListItemButton onClick={() => onClick("kis")} selected={isSelectedPage("/main/pengusulan-kis")}>
+      <ListItemButton onClick={() => onClick("kis")} selected={isSelectedPage("/user/pengusulan-kis")}>
         <ListItemIcon>
           <NoteAddIcon color="cinav" />
         </ListItemIcon>

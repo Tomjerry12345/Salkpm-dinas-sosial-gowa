@@ -13,9 +13,9 @@ const DrawerLogic = () => {
     if (value === "dtks") {
       navigate("/");
     } else if (value === "pengunjung") {
-      navigate("/main/daftar-pengunjung");
+      navigate("/user/daftar-pengunjung");
     } else if (value === "kis") {
-      navigate("/main/pengusulan-kis");
+      navigate("/user/pengusulan-kis");
     }
   };
 
